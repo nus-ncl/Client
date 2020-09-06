@@ -76,12 +76,13 @@ class myMainWindow(QtWidgets.QMainWindow,Ui_MainWindow):
 		# pro1 is NOT the ssh tunnel pid, it's the pid of a process which invokes background ssh tunnel
 		# so this pro1 terminates when Popen returns. But the background ssh tunnel pid is still there
 		pro1 = subprocess.Popen(ssh_cmd.split())
-		# self.tunnel_pid = pro1.pid
-		# print(self.tunnel_pid)
+		pro1.wait()
+		self.tunnel_pid = pro1.pid
+		print(self.tunnel_pid)
 		# print("done")
 		# time.sleep(10)
 		# print("You doubleclick! {},{},{},{},{}".format(item.text(0),item.parent().text(0),item.text(1),item.text(2),col))
-		# subprocess.run(("rdesktop -a 16 localhost:" + str(local_port)).split())
+		subprocess.run(("rdesktop -a 16 localhost:" + str(local_port)).split())
 		# subprocess.run(("kill -9 " + str(self.tunnel_pid)).split())
 
 	def Populate(self, Node_QTreeWidgetItem):
