@@ -1,63 +1,71 @@
 from PySide2.QtXml import (QDomDocument)
-from PySide2.QtCore import QFile, QFileInfo, QIODevice,QTextStream
+from PySide2.QtCore import QFile, QFileInfo, QIODevice, QTextStream
+
 
 def importXmlDOM(filename):
-    # Instantiate an empty QDomDocument
-    # The QDomDocument class represents the entire XML document
-    # The DOM classes that will be used most often are QDomNode , QDomDocument , QDomElement and QDomText
-    document = QDomDocument()
-    error = None
-    file = None
-    try:
-        # instantiate a device(QFile) specified by filename
-        file = QFile(filename)
-        if not file.open(QIODevice.ReadOnly):
-            raise IOError(str(file.errorString()))
-        # setContent parses an XML file and creates the DOM tree that represents the document
-        if not document.setContent(file):
-            raise ValueError("could not parse XML")
-    except (IOError, OSError, ValueError) as e:
-        error = "Failed to import: {0}".format(e)
-    finally:
-        if file is not None:
-            file.close()
-        if error is not None:
-            print(error)
-        return document
-        # populateFromDOM(document)
+	'''
+	The QDomDocument class represents the entire XML document
+	The DOM classes that will be used most often are QDomNode , QDomDocument , QDomElement and QDomText
+	The DOM tree might end up reserving a lot of memory if the XML document is big. For such documents,
+	the QXmlStreamReaderor the QXmlQuery classes might be better solutions.
+	:param filename: filename_path
+	:return: document
+	'''
 
-def exportXml(fname,movie):
-    CODEC="UTF-8"
-    error = None
-    fh = None
-    try:
-        fh = QFile(fname)
-        if not fh.open(QIODevice.WriteOnly):
-            raise IOError(str(fh.errorString()))
-        stream = QTextStream(fh)
-        stream.setCodec(CODEC)
-        stream << ("<?xml version='1.0' encoding='{0}'?>\n"
-                   "<!DOCTYPE MOVIES>\n"
-                   "<MOVIES VERSION='1.0'>\n".format(CODEC))
-        stream << ("<MOVIE YEAR='{0}' MINUTES='{1}' "
-                   "ACQUIRED='{2}'>\n".format(movie.year,
-                                              movie.minutes,
-                                              movie.acquired)) \
-        << "<TITLE>" << movie.title \
-        << "</TITLE>\n<NOTES>"
-        if movie.notes:
-            stream << "\n" << movie.notes
-        stream << "\n</NOTES>\n</MOVIE>\n"
-        stream << "</MOVIES>\n"
-    except EnvironmentError as e:
-        error = "Failed to export: {0}".format(e)
-    finally:
-        if fh is not None:
-            fh.close()
-        if error is not None:
-            print(error)
-        print("Exported 1 movie records to {0}".format(
-            QFileInfo(fname).fileName()))
+	document = QDomDocument()
+	error = None
+	file = None
+	try:
+		# instantiate a device(QFile) specified by filename
+		file = QFile(filename)
+		if not file.open(QIODevice.ReadOnly):
+			raise IOError(str(file.errorString()))
+		# setContent parses an XML file and creates the DOM tree that represents the document
+		if not document.setContent(file):
+			raise ValueError("could not parse XML")
+	except (IOError, OSError, ValueError) as e:
+		error = "Failed to import: {0}".format(e)
+	finally:
+		if file is not None:
+			file.close()
+		if error is not None:
+			print(error)
+		return document
+
+# TODO: export and insert
+def exportXml(fname, movie):
+	CODEC = "UTF-8"
+	error = None
+	fh = None
+	try:
+		fh = QFile(fname)
+		if not fh.open(QIODevice.WriteOnly):
+			raise IOError(str(fh.errorString()))
+		stream = QTextStream(fh)
+		stream.setCodec(CODEC)
+		stream << ("<?xml version='1.0' encoding='{0}'?>\n"
+		           "<!DOCTYPE MOVIES>\n"
+		           "<MOVIES VERSION='1.0'>\n".format(CODEC))
+		stream << ("<MOVIE YEAR='{0}' MINUTES='{1}' "
+		           "ACQUIRED='{2}'>\n".format(movie.year,
+		                                      movie.minutes,
+		                                      movie.acquired)) \
+		<< "<TITLE>" << movie.title \
+		<< "</TITLE>\n<NOTES>"
+		if movie.notes:
+			stream << "\n" << movie.notes
+		stream << "\n</NOTES>\n</MOVIE>\n"
+		stream << "</MOVIES>\n"
+	except EnvironmentError as e:
+		error = "Failed to export: {0}".format(e)
+	finally:
+		if fh is not None:
+			fh.close()
+		if error is not None:
+			print(error)
+		print("Exported 1 movie records to {0}".format(
+			QFileInfo(fname).fileName()))
+
 
 # def addNode(document,element):
 #     newElement = document.createElement("Machine")
@@ -190,3 +198,20 @@ def exportXml(fname,movie):
 #             exception.lineNumber(), exception.columnNumber(),
 #             exception.message())
 #         return False
+
+
+if __name__ == '__main__':
+	doc = importXmlDOM("client.xml")
+	# Return root element of the document <VM>
+	docElem = doc.documentElement()
+	print(docElem.nodeType())
+	print(doc.toString())
+	# elements = doc.elementsByTagNa
+	node = docElem.firstChild()
+	while not node.isNull():
+		print(node.toElement().attribute('name'))
+		vrdeport = node.toElement().elementsByTagName('vrdeport')
+		for i in range(vrdeport.length()):
+			print(vrdeport.at(i).toElement().attribute('value'))
+		node = node.nextSibling()
+

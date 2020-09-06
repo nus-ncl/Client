@@ -2,10 +2,12 @@ import os
 import subprocess
 import Port
 import ProcessTag
-import IOXML
 from PySide2 import QtWidgets
 from PySide2.QtWidgets import QFileDialog
 from ScrollUI import Ui_MainWindow
+
+from IOXML import *
+
 
 class myMainWindow(QtWidgets.QMainWindow,Ui_MainWindow):
 	def __init__(self):
@@ -16,13 +18,21 @@ class myMainWindow(QtWidgets.QMainWindow,Ui_MainWindow):
 		self.Populate(self.Node_QTreeWidgetItem)
 
 	def updateQTreeWidgetItem(self):
-		TagName = "Machine"
+		TagName = "VM"
+		Attributes = ["name", "Node", "ExperimentName", "TeamName"]
+		try:
+			output = ProcessTag.processTagName(self.document, TagName, Attributes)
+			print(output)
+		except ValueError as e:
+			print("Failed to import: {0}".format(e))
 
-		self.Machine = ProcessTag.getGlobalMachineAttribute(self.document, TagName, 'name')
-		Node = ProcessTag.getGlobalMachineAttribute(self.document, TagName, 'Node')
-		Exp = ProcessTag.getGlobalMachineAttribute(self.document, TagName, 'ExperimentName')
-		Team = ProcessTag.getGlobalMachineAttribute(self.document, TagName, 'TeamName')
 
+		self.Machine = output[0]
+		Node = output[1]
+		Exp = output[2]
+		Team = output[3]
+
+		# print([Machine[0],Exp[0],Team[0]])
 		Node_set = list(set(Node))
 		Node_set.sort()
 
@@ -44,20 +54,14 @@ class myMainWindow(QtWidgets.QMainWindow,Ui_MainWindow):
 
 
 	def doubleclick(self,item,col):
-		# self.TagName = "VRDEProperties"
-		# self.Attributes = ["name", "value"]
-		# self.TagName = "vrdeport"
-		# self.Attributes = "value"
-		# self.vrde_port = {}
-		TagName = "vrdeport"
-		Attributes = "value"
-		vrde_port = {}
+		self.TagName = "VRDEProperties"
+		self.Attributes = ["name", "value"]
+		self.vrde_port = {}
 		try:
-			# self.output = ProcessTag.getGlobalTagNameAttribute(self.document, self.TagName, self.Attributes)
-			output = ProcessTag.getGlobalTagNameAttribute(self.document, TagName, Attributes)
-			# print(self.output)
+			self.output = ProcessTag.processTagName(self.document, self.TagName, self.Attributes)
 			for i in range(len(self.Machine)):
-				vrde_port[self.Machine[i]] = output[i]
+				self.vrde_port[self.Machine[i]] = self.output[1][2 * i + 1]
+			print(self.vrde_port)
 
 		except ValueError as e:
 			print("Failed to import: {0}".format(e))
@@ -71,7 +75,7 @@ class myMainWindow(QtWidgets.QMainWindow,Ui_MainWindow):
 		exp = item.text(1)
 		team = item.text(2)
 		machine = item.text(0)
-		ssh_cmd = "ssh -fNT -L " + str(local_port) + ":" + node + "." + exp + "." + team + ".ncl.sg:" + vrde_port[machine] + " " + username + "@users.ncl.sg"
+		ssh_cmd = "ssh -fNT -L " + str(local_port) + ":" + node + "." + exp + "." + team + ".ncl.sg:" + self.vrde_port[machine] + " " + username + "@users.ncl.sg"
 		print(ssh_cmd)
 		# pro1 is NOT the ssh tunnel pid, it's the pid of a process which invokes background ssh tunnel
 		# so this pro1 terminates when Popen returns. But the background ssh tunnel pid is still there
@@ -96,6 +100,6 @@ class myMainWindow(QtWidgets.QMainWindow,Ui_MainWindow):
 		else:
 			path = QFileDialog.getOpenFileName(self,"Open File Dialog","/","XML files(*.xml)")
 		print(path)
-		self.document = IOXML.importXmlDOM(str(path[0]))
+		self.document = importXmlDOM(str(path[0]))
 		self.updateQTreeWidgetItem()
 		# self.fileLineEdit.setText(str(path[0]))
