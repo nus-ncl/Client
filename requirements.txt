@@ -1,0 +1,2 @@
+cryptography==1.2.3
+PySide2==5.13.2
