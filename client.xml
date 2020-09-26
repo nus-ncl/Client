@@ -1,6 +1,42 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <VM>
-  <Machine name="VM1" OSType="generic/ubuntu1910" Node="n1" ExperimentName="Enterprise" TeamName="NCLSecurity">
+<!--  <Machine name="VM1" OSType="generic/ubuntu1910" Node="n1" ExperimentName="Enterprise" TeamName="NCLSecurity">-->
+<!--    <Hardware>-->
+<!--      <Memory RAMSize="default"/>-->
+<!--      <RemoteDisplay enabled="true">-->
+<!--        <VRDEProperties>-->
+<!--          <vrdeport value="12345"/>-->
+<!--          <vrdeaddress value="127.0.0.1"/>-->
+<!--        </VRDEProperties>-->
+<!--      </RemoteDisplay>-->
+<!--      <Network>-->
+<!--        <Adapter slot="0" enabled="true">-->
+<!--          <NAT>-->
+<!--            <Forwarding hostip="127.0.0.1" hostport="2202" guestport="22"/>-->
+<!--            <Forwarding hostip="127.0.0.1" hostport="8080" guestport="80"/>-->
+<!--          </NAT>-->
+<!--        </Adapter>-->
+<!--        <Adapter slot="1" enabled="true">-->
+<!--          <HostOnlyInterface name="vboxnet0" IP="172.16.1.101"/>-->
+<!--        </Adapter>-->
+<!--      </Network>-->
+<!--      <SharedFolders>-->
+<!--      </SharedFolders>-->
+<!--    </Hardware>-->
+<!--    <Software>-->
+<!--      <Service name="essentials_common"/>-->
+<!--      <Service name="python_sherlock_VM1"/>-->
+<!--      <Service name="php7.0"/>-->
+<!--      <Service name="django"/>-->
+<!--      <Service name="fstab"/>-->
+<!--      <Service name="blx"/>-->
+<!--      <Service name="binspace"/>-->
+<!--      <Service name="zara"/>-->
+<!--      <Service name="apache2_sherlock_VM1"/>-->
+<!--      <Service name="klara"/>-->
+<!--    </Software>-->
+<!--  </Machine>-->
+  <Machine name="VM3_Conductor" OSType="generic/ubuntu1910" Node="n2" ExperimentName="Enterprise" TeamName="NCLSecurity">
     <Hardware>
       <Memory RAMSize="default"/>
       <RemoteDisplay enabled="true">
@@ -36,157 +72,121 @@
       <Service name="klara"/>
     </Software>
   </Machine>
-  <Machine name="VM2" OSType="generic/ubuntu1910" Node="n2" ExperimentName="Enterprise" TeamName="NCLSecurity">
-    <Hardware>
-      <Memory RAMSize="default"/>
-      <RemoteDisplay enabled="true">
-        <VRDEProperties>
-          <vrdeport value="12346"/>
-          <vrdeaddress value="127.0.0.1"/>
-        </VRDEProperties>
-      </RemoteDisplay>
-      <Network>
-        <Adapter slot="0" enabled="true">
-          <NAT>
-            <Forwarding hostip="127.0.0.1" hostport="2202" guestport="22"/>
-            <Forwarding hostip="127.0.0.1" hostport="8080" guestport="80"/>
-          </NAT>
-        </Adapter>
-        <Adapter slot="1" enabled="true">
-          <HostOnlyInterface name="vboxnet0" IP="172.16.1.101"/>
-        </Adapter>
-      </Network>
-      <SharedFolders>
-      </SharedFolders>
-    </Hardware>
-    <Software>
-      <Service name="essentials_common"/>
-      <Service name="python_sherlock_VM1"/>
-      <Service name="php7.0"/>
-      <Service name="django"/>
-      <Service name="fstab"/>
-      <Service name="blx"/>
-      <Service name="binspace"/>
-      <Service name="zara"/>
-      <Service name="apache2_sherlock_VM1"/>
-      <Service name="klara"/>
-    </Software>
-  </Machine>
-  <Machine name="VM3" OSType="generic/ubuntu1910" Node="n3" ExperimentName="Enterprise" TeamName="NCLSecurity">
-    <Hardware>
-      <Memory RAMSize="default"/>
-      <RemoteDisplay enabled="true">
-        <VRDEProperties>
-          <vrdeport value="12347"/>
-          <vrdeaddress value="127.0.0.1"/>
-        </VRDEProperties>
-      </RemoteDisplay>
-      <Network>
-        <Adapter slot="0" enabled="true">
-          <NAT>
-            <Forwarding hostip="127.0.0.1" hostport="2203" guestport="22"/>
-          </NAT>
-        </Adapter>
-        <Adapter slot="1" enabled="true">
-          <HostOnlyInterface name="vboxnet0" IP="172.16.1.102"/>
-        </Adapter>
-      </Network>
-      <SharedFolders>
-      </SharedFolders>
-    </Hardware>
-    <Software>
-      <Service name="essentials_common"/>
-      <Service name="django_flowsim"/>
-      <Service name="fstab"/>
-      <Service name="flowsim"/>
-    </Software>
-  </Machine>
-  <Machine name="VM4" OSType="generic/ubuntu1910" Node="n2" ExperimentName="Enterprise" TeamName="NCLSecurity">
-    <Hardware>
-      <Memory RAMSize="default"/>
-      <RemoteDisplay enabled="true">
-        <VRDEProperties>
-          <vrdeport value="12348"/>
-          <vrdeaddress value="127.0.0.1"/>
-        </VRDEProperties>
-      </RemoteDisplay>
-      <Network>
-        <Adapter slot="0" enabled="true">
-          <NAT>
-            <Forwarding hostip="127.0.0.1" hostport="2203" guestport="22"/>
-          </NAT>
-        </Adapter>
-        <Adapter slot="1" enabled="true">
-          <HostOnlyInterface name="vboxnet0" IP="172.16.1.102"/>
-        </Adapter>
-      </Network>
-      <SharedFolders>
-      </SharedFolders>
-    </Hardware>
-    <Software>
-      <Service name="essentials_common"/>
-      <Service name="django_flowsim"/>
-      <Service name="fstab"/>
-      <Service name="flowsim"/>
-    </Software>
-  </Machine>
-  <Machine name="VM5" OSType="generic/ubuntu1910" Node="n2" ExperimentName="Enterprise" TeamName="NCLSecurity">
-    <Hardware>
-      <Memory RAMSize="default"/>
-      <RemoteDisplay enabled="true">
-        <VRDEProperties>
-          <vrdeport value="12349"/>
-          <vrdeaddress value="127.0.0.1"/>
-        </VRDEProperties>
-      </RemoteDisplay>
-      <Network>
-        <Adapter slot="0" enabled="true">
-          <NAT>
-            <Forwarding hostip="127.0.0.1" hostport="2203" guestport="22"/>
-          </NAT>
-        </Adapter>
-        <Adapter slot="1" enabled="true">
-          <HostOnlyInterface name="vboxnet0" IP="172.16.1.102"/>
-        </Adapter>
-      </Network>
-      <SharedFolders>
-      </SharedFolders>
-    </Hardware>
-    <Software>
-      <Service name="essentials_common"/>
-      <Service name="django_flowsim"/>
-      <Service name="fstab"/>
-      <Service name="flowsim"/>
-    </Software>
-  </Machine>
-  <Machine name="VM6" OSType="generic/ubuntu1910" Node="n1" ExperimentName="Enterprise" TeamName="NCLSecurity">
-    <Hardware>
-      <Memory RAMSize="default"/>
-      <RemoteDisplay enabled="true">
-        <VRDEProperties>
-          <vrdeport value="12350"/>
-          <vrdeaddress value="127.0.0.1"/>
-        </VRDEProperties>
-      </RemoteDisplay>
-      <Network>
-        <Adapter slot="0" enabled="true">
-          <NAT>
-            <Forwarding hostip="127.0.0.1" hostport="2203" guestport="22"/>
-          </NAT>
-        </Adapter>
-        <Adapter slot="1" enabled="true">
-          <HostOnlyInterface name="vboxnet0" IP="172.16.1.102"/>
-        </Adapter>
-      </Network>
-      <SharedFolders>
-      </SharedFolders>
-    </Hardware>
-    <Software>
-      <Service name="essentials_common"/>
-      <Service name="django_flowsim"/>
-      <Service name="fstab"/>
-      <Service name="flowsim"/>
-    </Software>
-  </Machine>
+<!--  <Machine name="VM3" OSType="generic/ubuntu1910" Node="n3" ExperimentName="Enterprise" TeamName="NCLSecurity">-->
+<!--    <Hardware>-->
+<!--      <Memory RAMSize="default"/>-->
+<!--      <RemoteDisplay enabled="true">-->
+<!--        <VRDEProperties>-->
+<!--          <vrdeport value="12347"/>-->
+<!--          <vrdeaddress value="127.0.0.1"/>-->
+<!--        </VRDEProperties>-->
+<!--      </RemoteDisplay>-->
+<!--      <Network>-->
+<!--        <Adapter slot="0" enabled="true">-->
+<!--          <NAT>-->
+<!--            <Forwarding hostip="127.0.0.1" hostport="2203" guestport="22"/>-->
+<!--          </NAT>-->
+<!--        </Adapter>-->
+<!--        <Adapter slot="1" enabled="true">-->
+<!--          <HostOnlyInterface name="vboxnet0" IP="172.16.1.102"/>-->
+<!--        </Adapter>-->
+<!--      </Network>-->
+<!--      <SharedFolders>-->
+<!--      </SharedFolders>-->
+<!--    </Hardware>-->
+<!--    <Software>-->
+<!--      <Service name="essentials_common"/>-->
+<!--      <Service name="django_flowsim"/>-->
+<!--      <Service name="fstab"/>-->
+<!--      <Service name="flowsim"/>-->
+<!--    </Software>-->
+<!--  </Machine>-->
+<!--  <Machine name="VM4" OSType="generic/ubuntu1910" Node="n2" ExperimentName="Enterprise" TeamName="NCLSecurity">-->
+<!--    <Hardware>-->
+<!--      <Memory RAMSize="default"/>-->
+<!--      <RemoteDisplay enabled="true">-->
+<!--        <VRDEProperties>-->
+<!--          <vrdeport value="12348"/>-->
+<!--          <vrdeaddress value="127.0.0.1"/>-->
+<!--        </VRDEProperties>-->
+<!--      </RemoteDisplay>-->
+<!--      <Network>-->
+<!--        <Adapter slot="0" enabled="true">-->
+<!--          <NAT>-->
+<!--            <Forwarding hostip="127.0.0.1" hostport="2203" guestport="22"/>-->
+<!--          </NAT>-->
+<!--        </Adapter>-->
+<!--        <Adapter slot="1" enabled="true">-->
+<!--          <HostOnlyInterface name="vboxnet0" IP="172.16.1.102"/>-->
+<!--        </Adapter>-->
+<!--      </Network>-->
+<!--      <SharedFolders>-->
+<!--      </SharedFolders>-->
+<!--    </Hardware>-->
+<!--    <Software>-->
+<!--      <Service name="essentials_common"/>-->
+<!--      <Service name="django_flowsim"/>-->
+<!--      <Service name="fstab"/>-->
+<!--      <Service name="flowsim"/>-->
+<!--    </Software>-->
+<!--  </Machine>-->
+<!--  <Machine name="VM5" OSType="generic/ubuntu1910" Node="n2" ExperimentName="Enterprise" TeamName="NCLSecurity">-->
+<!--    <Hardware>-->
+<!--      <Memory RAMSize="default"/>-->
+<!--      <RemoteDisplay enabled="true">-->
+<!--        <VRDEProperties>-->
+<!--          <vrdeport value="12349"/>-->
+<!--          <vrdeaddress value="127.0.0.1"/>-->
+<!--        </VRDEProperties>-->
+<!--      </RemoteDisplay>-->
+<!--      <Network>-->
+<!--        <Adapter slot="0" enabled="true">-->
+<!--          <NAT>-->
+<!--            <Forwarding hostip="127.0.0.1" hostport="2203" guestport="22"/>-->
+<!--          </NAT>-->
+<!--        </Adapter>-->
+<!--        <Adapter slot="1" enabled="true">-->
+<!--          <HostOnlyInterface name="vboxnet0" IP="172.16.1.102"/>-->
+<!--        </Adapter>-->
+<!--      </Network>-->
+<!--      <SharedFolders>-->
+<!--      </SharedFolders>-->
+<!--    </Hardware>-->
+<!--    <Software>-->
+<!--      <Service name="essentials_common"/>-->
+<!--      <Service name="django_flowsim"/>-->
+<!--      <Service name="fstab"/>-->
+<!--      <Service name="flowsim"/>-->
+<!--    </Software>-->
+<!--  </Machine>-->
+<!--  <Machine name="VM6" OSType="generic/ubuntu1910" Node="n1" ExperimentName="Enterprise" TeamName="NCLSecurity">-->
+<!--    <Hardware>-->
+<!--      <Memory RAMSize="default"/>-->
+<!--      <RemoteDisplay enabled="true">-->
+<!--        <VRDEProperties>-->
+<!--          <vrdeport value="12350"/>-->
+<!--          <vrdeaddress value="127.0.0.1"/>-->
+<!--        </VRDEProperties>-->
+<!--      </RemoteDisplay>-->
+<!--      <Network>-->
+<!--        <Adapter slot="0" enabled="true">-->
+<!--          <NAT>-->
+<!--            <Forwarding hostip="127.0.0.1" hostport="2203" guestport="22"/>-->
+<!--          </NAT>-->
+<!--        </Adapter>-->
+<!--        <Adapter slot="1" enabled="true">-->
+<!--          <HostOnlyInterface name="vboxnet0" IP="172.16.1.102"/>-->
+<!--        </Adapter>-->
+<!--      </Network>-->
+<!--      <SharedFolders>-->
+<!--      </SharedFolders>-->
+<!--    </Hardware>-->
+<!--    <Software>-->
+<!--      <Service name="essentials_common"/>-->
+<!--      <Service name="django_flowsim"/>-->
+<!--      <Service name="fstab"/>-->
+<!--      <Service name="flowsim"/>-->
+<!--    </Software>-->
+<!--  </Machine>-->
 </VM>
 
