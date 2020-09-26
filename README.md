@@ -1,4 +1,4 @@
-# Client tool
+# Client
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
@@ -18,7 +18,7 @@
   <h3 align="center">Client</h3>
 
   <p align="center">
-    An awesome README template to jumpstart your projects!
+    An awesome tool to make your access to your machines on NCL easily!
     <br />
     <a href="https://github.com/hkwany/Client"><strong>Explore the docs »</strong></a>
     <br />
@@ -37,7 +37,7 @@
 ## Table of Contents
 
 * [About the Project](#about-the-project)
-  * [Running Platform](#Running Platform)
+  * [Running Platform](#Running-Platform)
 * [Getting Started](#getting-started)
   * [Prerequisites](#prerequisites)
   * [Run](#Run)
@@ -115,10 +115,10 @@ python3 main.py
 [![Product Name Screen Shot][product-screenshot]](https://example.com)  
 
 1. Input your NCL username into ``user`` blank.
-2. Select your client.xml file by clicking the ``xml`` button.
+2. Select your client.xml file by clicking the ```xml``` button.
 3. Double-click the entry listed in the UI, go back to the command line and then input your NCL password.
 4. The Rdesktop GUI window has come out!!!
-5. For quitting, just close the Rdesktop GUI window and the port will be unbinded automatically.(_We also print binded port in command line, so you can unbind the process binded to that port by using 'kill' manually in case_)
+5. For quitting, just close the Rdesktop GUI window and the port will be unbinded automatically.(<font color=Blue>_We also print binded port in command line, so you can unbind the process binded to that port by using 'kill' manually in case_</font>)
 
 _For more examples, please refer to the [Documentation](https://example.com)_
 
