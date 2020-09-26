@@ -1,23 +1,4 @@
 # Client tool
-<!--
-*** Thanks for checking out this README Template. If you have a suggestion that would
-*** make this better, please fork the repo and create a pull request or simply open
-*** an issue with the tag "enhancement".
-*** Thanks again! Now go create something AMAZING! :D
--->
-
-
-
-
-
-<!-- PROJECT SHIELDS -->
-<!--
-*** I'm using markdown "reference style" links for readability.
-*** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
-*** See the bottom of this document for the declaration of the reference variables
-*** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
-*** https://www.markdownguide.org/basic-syntax/#reference-style-links
--->
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
@@ -31,7 +12,7 @@
 <br />
 <p align="center">
   <a href="https://github.com/hkwany/Client">
-    <img src="images/logo.jpg" alt="Logo" width="80" height="80">
+    <img src="images/logo.jpg" alt="Logo" width="200" height="200">
   </a>
 
   <h3 align="center">Client</h3>
@@ -56,79 +37,88 @@
 ## Table of Contents
 
 * [About the Project](#about-the-project)
-  * [Built With](#built-with)
+  * [Running Platform](#Running Platform)
 * [Getting Started](#getting-started)
   * [Prerequisites](#prerequisites)
-  * [Installation](#installation)
+  * [Run](#Run)
 * [Usage](#usage)
-* [Roadmap](#roadmap)
 * [Contributing](#contributing)
 * [License](#license)
 * [Contact](#contact)
 * [Acknowledgements](#acknowledgements)
+* [Contributors](#Contributors)
 
 
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+Configurating SSH tunnel and rdesktop to the remote machine(on NCL) is a kind of boring and tedious process. That's what this tool 'Client' aims to solve.
+It provides a clean GUI to automate the procedure of SSH tunneling, port binding & unbinding and rdesktop to make your life easier :)
 
-There are many great README templates available on GitHub, however, I didn't find one that really suit my needs so I created this enhanced one. I want to create a README template so amazing that it'll be the last one you ever need.
 
-Here's why:
-* Your time should be focused on creating something amazing. A project that solves a problem and helps others
-* You shouldn't be doing the same tasks over and over like creating a README from scratch
-* You should element DRY principles to the rest of your life :smile:
+### Running Platform
+* [Ubuntu](https://ubuntu.com/)
 
-Of course, no one template will serve all projects since your needs may be different. So I'll be adding more in the near future. You may also suggest changes by forking this repo and creating a pull request or opening an issue.
-
-A list of commonly used resources that I find helpful are listed in the acknowledgements.
-
-### Built With
-This section should list any major frameworks that you built your project using. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
-* [Bootstrap](https://getbootstrap.com)
-* [JQuery](https://jquery.com)
-* [Laravel](https://laravel.com)
 
 
 
 <!-- GETTING STARTED -->
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
+This is an instruction of how you to install prerequisites and run the Client tool locally successfully.
 
 ### Prerequisites
 
 This is an example of how to list things you need to use the software and how to install them.
-* npm
+* qt5
 ```sh
-npm install npm@latest -g
+sudo apt-get install qt5-default
 ```
 
-### Installation
-
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
+* python3 & pip3
 ```sh
-git clone https://github.com/your_username_/Project-Name.git
-```
-3. Install NPM packages
-```sh
-npm install
-```
-4. Enter your API in `config.js`
-```JS
-const API_KEY = 'ENTER YOUR API';
+sudo apt-get install python3 python3-pip
 ```
 
+* PySide2
+```sh
+# 'requirements.txt' is at root directory of this repository 
+pip3 install -r requirements.txt
+```
+
+* rdesktop
+```sh
+sudo apt-get install rdesktop
+```
+
+### Run
+
+1. Clone the repo
+```sh
+git clone git@github.com:hkwany/Client.git
+```
+2. Require your client.xml file of your remote machine.
+```sh
+# client.xml file is generated from Conductor #
+# But I have provided a template client.xml in this repo which you can try #
+```
+3. Run
+```sh
+python3 main.py
+```
 
 
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+[![Product Name Screen Shot][product-screenshot]](https://example.com)  
+
+1. Input your NCL username into ``user`` blank.
+2. Select your client.xml file by clicking the ``xml`` button.
+3. Double-click the entry listed in the UI, go back to the command line and then input your NCL password.
+4. The Rdesktop GUI window has come out!!!
+5. For quitting, just close the Rdesktop GUI window and the port will be unbinded automatically.(_We also print binded port in command line, so you can unbind the process binded to that port by using 'kill' manually in case_)
 
 _For more examples, please refer to the [Documentation](https://example.com)_
 
@@ -164,42 +154,32 @@ Distributed under the MIT License. See `LICENSE` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@your_twitter](https://twitter.com/your_username) - email@example.com
+Huang Kang - [dcshka@nus.edu.sg]
 
-Project Link: [https://github.com/your_username/repo_name](https://github.com/your_username/repo_name)
+Project Link: [https://github.com/hkwany/Client](https://github.com/hkwany/Client)
 
 
 
 <!-- ACKNOWLEDGEMENTS -->
 ## Acknowledgements
-* [GitHub Emoji Cheat Sheet](https://www.webpagefx.com/tools/emoji-cheat-sheet)
-* [Img Shields](https://shields.io)
-* [Choose an Open Source License](https://choosealicense.com)
-* [GitHub Pages](https://pages.github.com)
-* [Animate.css](https://daneden.github.io/animate.css)
-* [Loaders.css](https://connoratherton.com/loaders)
-* [Slick Carousel](https://kenwheeler.github.io/slick)
-* [Smooth Scroll](https://github.com/cferdinandi/smooth-scroll)
-* [Sticky Kit](http://leafo.net/sticky-kit)
-* [JVectorMap](http://jvectormap.com)
-* [Font Awesome](https://fontawesome.com)
+* [NCL](https://ncl.sg/)
 
-
-
-
+<!--  CONTRIBUTORS -->
+## Contributors
+* Huang Kang
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/othneildrew/Best-README-Template.svg?style=flat-square
+[contributors-shield]: https://img.shields.io/badge/contributors-1-brightgreen
 [contributors-url]: https://github.com/hkwany/Client/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/othneildrew/Best-README-Template.svg?style=flat-square
+[forks-shield]: https://img.shields.io/badge/forks-0-blue
 [forks-url]: https://github.com/hkwany/Client/network/members
-[stars-shield]: https://img.shields.io/github/stars/othneildrew/Best-README-Template.svg?style=flat-square
+[stars-shield]: https://img.shields.io/badge/stars-0-orange
 [stars-url]: https://github.com/hkwany/Client/stargazers
-[issues-shield]: https://img.shields.io/github/issues/othneildrew/Best-README-Template.svg?style=flat-square
+[issues-shield]: https://img.shields.io/badge/issues-0-red
 [issues-url]: https://github.com/hkwany/Client/issues
-[license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=flat-square
-[license-url]: https://github.com/hkwany/Client/blob/master/LICENSE.txt
+[license-shield]: https://img.shields.io/badge/license-MIT-blueviolet
+[license-url]: https://github.com/hkwany/Client/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/othneildrew
-[product-screenshot]: images/screenshot.png
+[linkedin-url]: https://linkedin.com/
+[product-screenshot]: images/client-screenshot.png
