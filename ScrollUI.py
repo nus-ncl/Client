@@ -103,7 +103,7 @@ class Ui_MainWindow(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.label.setText(_translate("MainWindow", "SSH Tunnel & Rdesktop Tool"))
-        self.label_2.setText(_translate("MainWindow", "Username"))
+        self.label_2.setText(_translate("MainWindow", "User"))
         self.label_3.setText(_translate("MainWindow", "XML File"))
         self.pushButton.setText(_translate("MainWindow", "XML"))
 
