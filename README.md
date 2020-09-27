@@ -42,6 +42,7 @@
   * [Prerequisites](#prerequisites)
   * [Run](#Run)
 * [Usage](#usage)
+* [Roadmap](#roadmap)
 * [Contributing](#contributing)
 * [License](#license)
 * [Contact](#contact)
@@ -115,10 +116,10 @@ python3 main.py
 [![Product Name Screen Shot][product-screenshot]](https://example.com)  
 
 1. Input your NCL username into ``user`` blank.
-2. Select your client.xml file by clicking the ```xml``` button.
+2. Select your client.xml file by clicking the ``xml`` button.
 3. Double-click the entry listed in the UI, go back to the command line and then input your NCL password.
 4. The Rdesktop GUI window has come out!!!
-5. For quitting, just close the Rdesktop GUI window and the port will be unbinded automatically.(<font color=Blue>_We also print binded port in command line, so you can unbind the process binded to that port by using 'kill' manually in case_</font>)
+5. For quitting, just close the Rdesktop GUI window and the port will be unbinded automatically.(_We also print binded port in command line, so you can unbind the process binded to that port by using 'kill' manually in case_)
 
 _For more examples, please refer to the [Documentation](https://example.com)_
 
