@@ -42,7 +42,7 @@
   * [Prerequisites](#prerequisites)
   * [Run](#Run)
 * [Usage](#usage)
-* [Roadmap](#roadmap)
+* [Issues](#Issues)
 * [Contributing](#contributing)
 * [License](#license)
 * [Contact](#contact)
@@ -125,8 +125,8 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 
 
 
-<!-- ROADMAP -->
-## Roadmap
+<!-- ISSUES -->
+## Issues
 
 See the [open issues](https://github.com/hkwany/Client/issues) for a list of proposed features (and known issues).
 
