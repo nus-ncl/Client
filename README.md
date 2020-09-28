@@ -11,7 +11,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <a href="https://github.com/hkwany/Client">
+  <a href="https://github.com/nus-ncl/Client">
     <img src="images/logo.jpg" alt="Logo" width="200" height="200">
   </a>
 
@@ -20,14 +20,14 @@
   <p align="center">
     An awesome tool to make your access to your machines on NCL easily!
     <br />
-    <a href="https://github.com/hkwany/Client"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/nus-ncl/Client"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/hkwany/Client">View Demo</a>
+    <a href="https://github.com/nus-ncl/Client">View Demo</a>
     ·
-    <a href="https://github.com/hkwany/Client/issues">Report Bug</a>
+    <a href="https://github.com/nus-ncl/Client/issues">Report Bug</a>
     ·
-    <a href="https://github.com/hkwany/Client/issues">Request Feature</a>
+    <a href="https://github.com/nus-ncl/Client/issues">Request Feature</a>
   </p>
 </p>
 
@@ -97,7 +97,7 @@ sudo apt-get install rdesktop
 
 1. Clone the repo
 ```sh
-git clone git@github.com:hkwany/Client.git
+git clone git@github.com:nus-ncl/Client.git
 ```
 2. Require your client.xml file of your remote machine.
 ```sh
@@ -128,7 +128,7 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 <!-- ISSUES -->
 ## Issues
 
-See the [open issues](https://github.com/hkwany/Client/issues) for a list of proposed features (and known issues).
+See the [open issues](https://github.com/nus-ncl/Client/issues) for a list of proposed features (and known issues).
 
 
 
@@ -157,7 +157,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 Huang Kang - [dcshka@nus.edu.sg]
 
-Project Link: [https://github.com/hkwany/Client](https://github.com/hkwany/Client)
+Project Link: [https://github.com/nus-ncl/Client](https://github.com/nus-ncl/Client)
 
 
 
@@ -172,15 +172,15 @@ Project Link: [https://github.com/hkwany/Client](https://github.com/hkwany/Clien
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [contributors-shield]: https://img.shields.io/badge/contributors-1-brightgreen
-[contributors-url]: https://github.com/hkwany/Client/graphs/contributors
+[contributors-url]: https://github.com/nus-ncl/Client/graphs/contributors
 [forks-shield]: https://img.shields.io/badge/forks-0-blue
-[forks-url]: https://github.com/hkwany/Client/network/members
+[forks-url]: https://github.com/nus-ncl/Client/network/members
 [stars-shield]: https://img.shields.io/badge/stars-0-orange
-[stars-url]: https://github.com/hkwany/Client/stargazers
+[stars-url]: https://github.com/nus-ncl/Client/stargazers
 [issues-shield]: https://img.shields.io/badge/issues-0-red
-[issues-url]: https://github.com/hkwany/Client/issues
+[issues-url]: https://github.com/nus-ncl/Client/issues
 [license-shield]: https://img.shields.io/badge/license-MIT-blueviolet
-[license-url]: https://github.com/hkwany/Client/LICENSE.txt
+[license-url]: https://github.com/nus-ncl/Client/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/
 [product-screenshot]: images/client-screenshot.png
