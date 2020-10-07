@@ -71,6 +71,11 @@ class myMainWindow(QtWidgets.QMainWindow,Ui_MainWindow):
 		exp = item.text(1)
 		team = item.text(2)
 		machine = item.text(0)
+		'''
+		-f: Go to background
+		-N: Do not execute a remote command. This is useful for just forwarding ports
+		-T: Disable pseudo-tty allocation
+		'''
 		ssh_cmd = "ssh -fNT -L " + str(local_port) + ":" + node + "." + exp + "." + team + ".ncl.sg:" + vrde_port[machine] + " " + username + "@users.ncl.sg"
 		print(ssh_cmd)
 		# pro1 is NOT the ssh tunnel pid, it's the pid of a process which invokes background ssh tunnel
@@ -82,7 +87,8 @@ class myMainWindow(QtWidgets.QMainWindow,Ui_MainWindow):
 		# print("done")
 		# time.sleep(10)
 		# print("You doubleclick! {},{},{},{},{}".format(item.text(0),item.parent().text(0),item.text(1),item.text(2),col))
-		subprocess.run(("rdesktop -a 16 localhost:" + str(local_port)).split())
+		# subprocess.run(("rdesktop -a 16 localhost:" + str(local_port)).split())
+		subprocess.run(("ssh -p " + str(local_port)).split())
 		# subprocess.run(("kill -9 " + str(self.tunnel_pid)).split())
 
 	def Populate(self, Node_QTreeWidgetItem):
