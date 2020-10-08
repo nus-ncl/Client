@@ -1,6 +1,6 @@
 import sys
 from PySide2 import QtWidgets
-import myMainWindow
+import myMainWindow2 as myMainWindow
 
 if __name__ == '__main__':
 	app = 0
