@@ -116,13 +116,16 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 				# pro1 is NOT the ssh tunnel pid, it's the pid of a process which invokes background ssh tunnel
 				# so this pro1 terminates when Popen returns. But the background ssh tunnel pid is still there
 
-				# pro1 = subprocess.Popen(ssh_local_forward_cmd.split())
-				# pro1.wait()
+				pro1 = subprocess.Popen(ssh_local_forward_cmd.split())
+				pro1.wait()
+				print(pro1.pid)
+
 				# self.tunnel_pid = pro1.pid
 				# print(self.tunnel_pid)
 
 				rdesktop_cmd = "rdesktop -a 16 localhost:" + str(local_port)
 				print(rdesktop_cmd)
+				subprocess.run(rdesktop_cmd.split())
 
 			if (self.connection_function == 'SSH'):
 				# SSH
@@ -143,12 +146,20 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 				else:
 					ssh_local_forward_cmd = "ssh -fNT -L " + str(local_port) + ":" + node + "." + exp + "." + team + ".ncl.sg:" + ssh_port + " " + username + "@users.ncl.sg"
 					print(ssh_local_forward_cmd)
+					pro1 = subprocess.Popen(ssh_local_forward_cmd.split())
+					pro1.wait()
+
+					print(pro1.pid)
 
 					ssh_cmd = "ssh -p " + str(local_port) + " vagrant@localhost"
 					print(ssh_cmd)
+					subprocess.run(ssh_cmd.split())
+
+
 
 			if (self.connection_function == 'VNC'):
 				pass
+			print('here')
 
 
 	# print("You doubleclick! {},{},{},{},{}".format(item.text(0),item.parent().text(0),item.text(1),item.text(2),col))
