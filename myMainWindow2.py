@@ -160,6 +160,7 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 			if (self.connection_function == 'VNC'):
 				pass
 			print('here')
+			print('there')
 
 
 	# print("You doubleclick! {},{},{},{},{}".format(item.text(0),item.parent().text(0),item.text(1),item.text(2),col))
