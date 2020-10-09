@@ -74,7 +74,8 @@ This is an instruction of how you to install prerequisites and run the Client to
 This is an example of how to list things you need to use the software and how to install them.
 * qt5
 ```sh
-sudo apt-get install qt5-default
+# export QT_DEBUG_PLUGINS=1 to prompt debug info
+sudo apt-get install qt5-default libxcb-xinerama0
 ```
 
 * python3 & pip3
