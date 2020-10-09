@@ -51,7 +51,7 @@
       </SharedFolders>
     </Hardware>
     <Port_Forwarding>
-       <Forwarding hostip="0.0.0.0" hostport="22345" guestport="22"/>
+       <Forwarding hostip="0.0.0.0" hostport="22346" guestport="22"/>
     </Port_Forwarding>
     <Software>
       <Service name="essentials_common"/>
@@ -84,8 +84,8 @@
       </SharedFolders>
     </Hardware>
     <Port_Forwarding>
-       <Forwarding hostip="0.0.0.0" hostport="22346" guestport="22"/>
-       <Forwarding hostip="0.0.0.0" hostport="22347" guestport="2200"/>
+       <Forwarding hostip="0.0.0.0" hostport="22347" guestport="22"/>
+       <Forwarding hostip="0.0.0.0" hostport="22357" guestport="2200"/>
     </Port_Forwarding>
     <Software>
     </Software>
