@@ -111,6 +111,7 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 				-T: Disable pseudo-tty allocation
 				'''
 				ssh_local_forward_cmd = "ssh -fNT -L " + str(local_port) + ":" + node + "." + exp + "." + team + ".ncl.sg:" + rdp_port + " " + username + "@users.ncl.sg"
+
 				print(ssh_local_forward_cmd)
 				# pro1 is NOT the ssh tunnel pid, it's the pid of a process which invokes background ssh tunnel
 				# so this pro1 terminates when Popen returns. But the background ssh tunnel pid is still there
