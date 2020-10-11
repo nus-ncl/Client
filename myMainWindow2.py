@@ -3,9 +3,31 @@ import subprocess
 import Port
 import ProcessTag2 as ProcessTag
 import IOXML
+import My_SSH
+import threading
+import time
 from PySide2 import QtWidgets
 from PySide2.QtWidgets import QFileDialog
 from ScrollUI import Ui_MainWindow
+
+
+class myThread(threading.Thread):
+	def __init__(self, local_port, node, exp, team, ssh_port, username):
+		threading.Thread.__init__(self)
+		self.local_port = local_port
+		self.node = node
+		self.exp = exp
+		self.team = team
+		self.ssh_port = ssh_port
+		self.username = username
+
+	def run(self):
+		print("port forwarding started!")
+		My_SSH.port_forwarding(self.local_port, f"{self.node}.{self.exp}.{self.team}.ncl.sg", int(self.ssh_port),
+		                       "users.ncl.sg", 22, self.username,
+		                       "/Users/hkwany/.ssh/id_rsa")
+		# My_SSH.port_forwarding(12345, "n2.Enterprise.NCLSecurity.ncl.sg", 22345, "users.ncl.sg", 22, "khuang96",
+		#                        "/Users/hkwany/.ssh/id_rsa")
 
 
 class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
@@ -90,7 +112,7 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 		if (self.platform == 'Linux'):
 			if (self.connection_function == 'RDP'):
 				# RDP
-				rdp_port=0
+				rdp_port = 0
 				NodeName = "VRDEProperties"
 				TagName = "vrdeport"
 				Attributes = ["value"]
@@ -103,33 +125,31 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 				except ValueError as e:
 					print("Failed to import: {0}".format(e))
 
-				rdp_port=output_dict[machine][0]['value']
+				rdp_port = output_dict[machine][0]['value']
 
 				'''
 				-f: Go to background
 				-N: Do not execute a remote command. This is useful for just forwarding ports
 				-T: Disable pseudo-tty allocation
 				'''
-				ssh_local_forward_cmd = "ssh -fNT -L " + str(local_port) + ":" + node + "." + exp + "." + team + ".ncl.sg:" + rdp_port + " " + username + "@users.ncl.sg"
-
+				ssh_local_forward_cmd = "ssh -fNT -L " + str(
+					local_port) + ":" + node + "." + exp + "." + team + ".ncl.sg:" + rdp_port + " " + username + "@users.ncl.sg"
 				print(ssh_local_forward_cmd)
-				# pro1 is NOT the ssh tunnel pid, it's the pid of a process which invokes background ssh tunnel
-				# so this pro1 terminates when Popen returns. But the background ssh tunnel pid is still there
-
-				pro1 = subprocess.Popen(ssh_local_forward_cmd.split())
-				pro1.wait()
-				print(pro1.pid)
-
+				thread1 = myThread(local_port, node, exp, team, ssh_port, username).start()
+				# pro1 = subprocess.Popen(ssh_local_forward_cmd.split())
+				# pro1.wait()
+				# print(pro1.pid)
 				# self.tunnel_pid = pro1.pid
 				# print(self.tunnel_pid)
 
+				time.sleep(2)
 				rdesktop_cmd = "rdesktop -a 16 localhost:" + str(local_port)
 				print(rdesktop_cmd)
 				subprocess.run(rdesktop_cmd.split())
 
 			if (self.connection_function == 'SSH'):
 				# SSH
-				ssh_port=0
+				ssh_port = 0
 				NodeName = "Port_Forwarding"
 				TagName = "Forwarding"
 				Attributes = ["hostip", "hostport", "guestport"]
@@ -141,27 +161,27 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 				for port_forwarding in output_dict[machine]:
 					if port_forwarding['guestport'] == '22':
 						ssh_port = port_forwarding['hostport']
-				if ssh_port==0:
+				if ssh_port == 0:
 					print("This VM's SSH port hasn't been port forwarded!")
 				else:
-					ssh_local_forward_cmd = "ssh -fNT -L " + str(local_port) + ":" + node + "." + exp + "." + team + ".ncl.sg:" + ssh_port + " " + username + "@users.ncl.sg"
+					ssh_local_forward_cmd = f"ssh -fNT -L {str(local_port)}:{node}.{exp}.{team}.ncl.sg:{ssh_port} {username}@users.ncl.sg"
 					print(ssh_local_forward_cmd)
-					pro1 = subprocess.Popen(ssh_local_forward_cmd.split())
-					pro1.wait()
+					thread2 = myThread(local_port, node, exp, team, ssh_port, username).start()
 
-					print(pro1.pid)
+					# My_SSH.port_forwarding(local_port, f"{node}.{exp}.{team}.ncl.sg", int(ssh_port), "users.ncl.sg", 22,
+					#                        username, "/Users/hkwany/.ssh/id_rsa")
+					# port_forwarding(12345,"n2.Enterprise.NCLSecurity.ncl.sg",22345,"users.ncl.sg",22,"khuang96","/Users/hkwany/.ssh/id_rsa")
 
+					# pro1 = subprocess.Popen(ssh_local_forward_cmd.split())
+					# pro1.wait()
+					# print(pro1.pid)
+					time.sleep(2)
 					ssh_cmd = "ssh -p " + str(local_port) + " vagrant@localhost"
 					print(ssh_cmd)
 					subprocess.run(ssh_cmd.split())
 
-
-
 			if (self.connection_function == 'VNC'):
 				pass
-			print('here')
-			print('there')
-
 
 	# print("You doubleclick! {},{},{},{},{}".format(item.text(0),item.parent().text(0),item.text(1),item.text(2),col))
 	# subprocess.run(("rdesktop -a 16 localhost:" + str(local_port)).split())

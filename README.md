@@ -78,6 +78,16 @@ This is an example of how to list things you need to use the software and how to
 sudo apt-get install qt5-default libxcb-xinerama0
 ```
 
+* SSH Key generation and configuration
+```sh
+# Generate rsa key-pair, private & public keys
+ssh-keygen -t rsa
+# Let's say using default location ~/.ssh/id_rsa
+# Copy public key to remote machine ~/.ssh/authorized_key file so that you 
+# can ssh login without inputting password
+ssh-copy-id -i ~/.ssh/id_rsa username@user.ncl.sg
+```
+
 * python3 & pip3
 ```sh
 sudo apt-get install python3 python3-pip
