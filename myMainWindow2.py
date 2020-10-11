@@ -124,28 +124,32 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
 				except ValueError as e:
 					print("Failed to import: {0}".format(e))
+				# print(output_dict)
+				if (not output_dict[machine]) or (output_dict[machine][0]['value'] ==''):
+					pass
+				else:
+					rdp_port = output_dict[machine][0]['value']
+				if rdp_port == 0:
+					print("This VM's rdesktop port hasn't been set!")
+				else:
+					'''
+					-f: Go to background
+					-N: Do not execute a remote command. This is useful for just forwarding ports
+					-T: Disable pseudo-tty allocation
+					'''
+					ssh_local_forward_cmd = "ssh -fNT -L " + str(local_port) + ":" + node + "." + exp + "." + team + ".ncl.sg:" + rdp_port + " " + username + "@users.ncl.sg"
+					print(ssh_local_forward_cmd)
+					thread1 = myThread(local_port, node, exp, team, rdp_port, username).start()
+					# pro1 = subprocess.Popen(ssh_local_forward_cmd.split())
+					# pro1.wait()
+					# print(pro1.pid)
+					# self.tunnel_pid = pro1.pid
+					# print(self.tunnel_pid)
 
-				rdp_port = output_dict[machine][0]['value']
-
-				'''
-				-f: Go to background
-				-N: Do not execute a remote command. This is useful for just forwarding ports
-				-T: Disable pseudo-tty allocation
-				'''
-				ssh_local_forward_cmd = "ssh -fNT -L " + str(
-					local_port) + ":" + node + "." + exp + "." + team + ".ncl.sg:" + rdp_port + " " + username + "@users.ncl.sg"
-				print(ssh_local_forward_cmd)
-				thread1 = myThread(local_port, node, exp, team, ssh_port, username).start()
-				# pro1 = subprocess.Popen(ssh_local_forward_cmd.split())
-				# pro1.wait()
-				# print(pro1.pid)
-				# self.tunnel_pid = pro1.pid
-				# print(self.tunnel_pid)
-
-				time.sleep(2)
-				rdesktop_cmd = "rdesktop -a 16 localhost:" + str(local_port)
-				print(rdesktop_cmd)
-				subprocess.run(rdesktop_cmd.split())
+					time.sleep(2)
+					rdesktop_cmd = "rdesktop -a 16 localhost:" + str(local_port)
+					print(rdesktop_cmd)
+					subprocess.run(rdesktop_cmd.split())
 
 			if (self.connection_function == 'SSH'):
 				# SSH
