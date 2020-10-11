@@ -6,6 +6,7 @@ import IOXML
 import My_SSH
 import threading
 import time
+from pathlib import Path
 from PySide2 import QtWidgets
 from PySide2.QtWidgets import QFileDialog
 from ScrollUI import Ui_MainWindow
@@ -22,10 +23,11 @@ class myThread(threading.Thread):
 		self.username = username
 
 	def run(self):
+		home = str(Path.home())
 		print("port forwarding started!")
 		My_SSH.port_forwarding(self.local_port, f"{self.node}.{self.exp}.{self.team}.ncl.sg", int(self.ssh_port),
 		                       "users.ncl.sg", 22, self.username,
-		                       "/Users/hkwany/.ssh/id_rsa")
+		                       f"{home}/.ssh/id_rsa")
 		# My_SSH.port_forwarding(12345, "n2.Enterprise.NCLSecurity.ncl.sg", 22345, "users.ncl.sg", 22, "khuang96",
 		#                        "/Users/hkwany/.ssh/id_rsa")
 
