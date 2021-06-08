@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <VM>
-  <Machine name="VM1" OSType="generic/ubuntu1910" Node="n2" ExperimentName="Enterprise" TeamName="NCLSecurity">
+  <Machine name="VM1" OSType="generic/ubuntu1910" Node="n1" ExperimentName="Enterprise" TeamName="NCLSecurity">
     <Hardware>
       <Memory RAMSize="default"/>
       <RemoteDisplay enabled="true">
         <VRDEProperties>
           <vrdeport value="12345"/>
-          <vrdeaddress value="127.0.0.1"/>
+          <vrdeaddress value="0.0.0.0"/>
           <vncport value="12345"/>
         </VRDEProperties>
       </RemoteDisplay>
@@ -27,7 +27,7 @@
       <Service name="python_sherlock_VM1"/>
     </Software>
   </Machine>
-  <Machine name="VM2" OSType="generic/ubuntu1910" Node="n1" ExperimentName="midterm1" TeamName="CS4238-20-01">
+  <Machine name="VM2" OSType="generic/ubuntu1910" Node="n2" ExperimentName="midterm1" TeamName="CS4238-20-01">
     <Hardware>
       <Memory RAMSize="default"/>
       <RemoteDisplay enabled="true">
@@ -57,38 +57,3 @@
       <Service name="essentials_common"/>
     </Software>
   </Machine>
-  <Machine name="VM3" OSType="generic/ubuntu1910" Node="n1" ExperimentName="midterm1" TeamName="CS4238-20-01">
-    <Hardware>
-      <Memory RAMSize="default"/>
-      <RemoteDisplay enabled="true">
-        <VRDEProperties>
-          <vrdeport value="12347"/>
-          <vrdeaddress value="127.0.0.1"/>
-          <vncport value="12345"/>
-        </VRDEProperties>
-      </RemoteDisplay>
-      <Network>
-        <Aadapter slot="0" enabled="true">
-          <NAT>
-            <NAT_Forwarding hostip="127.0.0.1" hostport="2202" guestport="22"/>
-            <NAT_Forwarding hostip="127.0.0.1" hostport="8080" guestport="80"/>
-          </NAT>
-        </Aadapter>
-        <Adapter slot="1" enabled="true">
-          <HostOnlyInterface name="vboxnet0" IP="172.16.1.101"/>
-          <HostOnlyInterface name="vboxnet0" IP="172.16.1.102"/>
-          <HostOnlyInterface name="vboxnet0" IP="172.16.1.103"/>
-        </Adapter>
-      </Network>
-      <SharedFolders>
-      </SharedFolders>
-    </Hardware>
-    <Port_Forwarding>
-       <Forwarding hostip="0.0.0.0" hostport="22347" guestport="22"/>
-       <Forwarding hostip="0.0.0.0" hostport="22357" guestport="2200"/>
-    </Port_Forwarding>
-    <Software>
-    </Software>
-  </Machine>
-</VM>
-
