@@ -77,6 +77,15 @@ This is an example of how to list things you need to use the software and how to
 # export QT_DEBUG_PLUGINS=1 to prompt debug info
 sudo apt-get install qt5-default libxcb-xinerama0
 ```
+* ssh-askpass
+```sh
+# You're probably missing the package that contains ssh-askpass. Try installing it.
+# Fedora/CentOS/RHEL:
+$ sudo yum install openssh-askpass
+
+#Debian/Ubuntu:
+$ sudo apt-get install ssh-askpass-gnome ssh-askpass
+```
 
 * SSH Key generation and configuration
 ```sh
