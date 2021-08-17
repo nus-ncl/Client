@@ -1,9 +1,10 @@
-import IOXML
+from xml.dom import minidom
+import os
 
 def printDocument(document):
 	print(document.toString())
 
-def getGlobalTagNameAttribute(document, TagName, Attribute):
+def XML_Parser(document, TagName, Attribute):
 	'''
 	Traverse all the global document to get the Attribution's value belonging to TagName
 	:param document:
@@ -26,6 +27,70 @@ def getGlobalTagNameAttribute(document, TagName, Attribute):
 			# print(TagName_list.at(i).toElement().attribute(Attribute))
 		Machine = Machine.nextSibling()
 	return output
+
+def getGlobalTagAttribute(document, TagName, Attribute):
+	'''
+	Traverse all the global document to get the Attribution's value belonging to TagName
+	:param document:
+	:param TagName:
+	:param Attribute:
+	:return:
+	'''
+
+	output=[]
+	# Return root element of the document <VM>
+	RootElement = document.documentElement()
+	# Return first <Machine>
+	Machine = RootElement.firstChild()
+	while not Machine.isNull():
+		# print(Machine.toElement().attribute('name')+':')
+		# Maybe there're many identical TagName at the same time, so they contruct a list
+		TagName_list = Machine.toElement().elementsByTagName(TagName)
+		for i in range(TagName_list.length()):
+			output.append(TagName_list.at(i).toElement().attribute(Attribute))
+			# print(TagName_list.at(i).toElement().attribute(Attribute))
+		Machine = Machine.nextSibling()
+	return output
+
+def getGlobalNodeTagAttributes(document, NodeName, TagName, Attributes):
+	'''
+	Traverse all the global document to get the Attribution's value belonging to TagName
+	:param document:
+	:param TagName:
+	:param Attributes:
+	:return:
+	'''
+
+	# output=[]
+	output_dict = {}
+	# Return root element of the document <VM>
+	RootElement = document.documentElement()
+	# Return first <Machine>
+	Machine = RootElement.firstChild()
+	# print(type(Machine))
+	while not Machine.isNull():
+		machine_name = Machine.toElement().attribute("name")
+		output_dict[machine_name]=[]
+		# print(Machine.toElement().attribute('name')+':')
+		# Maybe there're many identical TagName at the same time, so they contruct a list
+		Node_list = Machine.toElement().elementsByTagName(NodeName)
+		TagName_list = Node_list.at(0).toElement().elementsByTagName(TagName)
+		# print(type(TagName_list))
+		# print(TagName_list.length())
+		# print(TagName_list)
+		for i in range(TagName_list.length()):
+			output = {}
+			for attribute in Attributes:
+				# print(attribute)
+				output[attribute]=TagName_list.at(i).toElement().attribute(attribute)
+				# print(output)
+			output_dict[machine_name].append(output)
+			# print(output_dict)
+			# print(TagName_list.at(i).toElement().attribute(Attribute))
+		# print(output)
+		Machine = Machine.nextSibling()
+	# print(output_dict)
+	return output_dict
 
 def getlocalTagNameAttribute(document, TagName, Attribute, specifier):
 	'''
@@ -140,9 +205,46 @@ def processTagName(document, TagName, Attributes):
 				propertyNode = propertyNode.nextSibling()
 		return output
 
+def getText(node):
+	return node.firstChild.getAttribute('text')
 if __name__ == '__main__':
-	document = IOXML.importXmlDOM("client.xml")
-	print(getGlobalMachineAttribute(document,'Machine','name'))
-	print(getGlobalMachineAttribute(document,'Machine','Node'))
-	print(getGlobalMachineAttribute(document,'Machine','ExperimentName'))
-	print(getGlobalMachineAttribute(document,'Machine','TeamName'))
+	xml_file_path=os.path.abspath("client.xml")
+	dom_obj=minidom.parse(xml_file_path)
+	machines = dom_obj.getElementsByTagName("Machine")
+	for machine in machines:
+		print(machine.getAttribute('name'))
+		port_forwardings = machine.getElementsByTagName("Port_Forwarding")
+		port_forwarding = port_forwardings[0]
+		# for port_forwarding in port_forwardings:
+		forwarding = port_forwarding.getElementsByTagName('Forwarding')
+		if len(forwarding) == 0:
+			print('Not Exist')
+		else:
+			for element in forwarding:
+				print(f"hostport:{element.getAttribute('hostport')},guestport:{element.getAttribute('guestport')}")
+		print('----')
+	# for machine in machines:
+	# 	print(machine.getAttribute('name'))
+	# 	forwarding = machine.getElementsByTagName("Forwarding")
+	# 	for element in forwarding:
+	# 		print(element.getAttribute('hostport'))
+	# 	print('----')
+
+
+	# for element in machines:
+	# 	print(element.getAttribute('name'))
+	# forwarding = dom_obj.getElementsByTagName("Forwarding")
+	# for element in forwarding:
+	# 	print(element.getAttribute("hostport"))
+
+	# xml_content = dom_obj.documentElement
+	# for i in range(len(xml_content.childNodes)):
+	# 	print(xml_content.childNodes[i])
+	# print(len(xml_content.childNodes))
+	# print(machines)
+
+		# print(f"{machine.getAttribute('name')}->")
+		# print(f"")
+		# for node in machine.childNodes:
+		# 	print(node)
+

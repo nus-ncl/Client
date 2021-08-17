@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <VM>
-  <Machine name="VM1" OSType="generic/ubuntu1910" Node="n2" ExperimentName="Enterprise" TeamName="NCLSecurity">
+  <Machine name="n1_ubuntu3" OSType="generic/ubuntu1910" Node="n1" ExperimentName="malware" TeamName="TechDemo">
     <Hardware>
       <Memory RAMSize="default"/>
       <RemoteDisplay enabled="true">
@@ -22,12 +22,15 @@
       <SharedFolders>
       </SharedFolders>
     </Hardware>
+    <Port_Forwarding>
+      <Forwarding hostip="0.0.0.0" hostport="2201" guestport="22"/>
+    </Port_Forwarding>
     <Software>
       <Service name="essentials_common"/>
       <Service name="python_sherlock_VM1"/>
     </Software>
   </Machine>
-  <Machine name="VM2" OSType="generic/ubuntu1910" Node="n1" ExperimentName="midterm1" TeamName="CS4238-20-01">
+  <Machine name="n1_ubuntu2" OSType="generic/ubuntu1910" Node="n1" ExperimentName="midterm1" TeamName="CS4238-20-01">
     <Hardware>
       <Memory RAMSize="default"/>
       <RemoteDisplay enabled="true">
@@ -57,7 +60,7 @@
       <Service name="essentials_common"/>
     </Software>
   </Machine>
-  <Machine name="VM3" OSType="generic/ubuntu1910" Node="n1" ExperimentName="midterm1" TeamName="CS4238-20-01">
+  <Machine name="n2_ubuntu1" OSType="generic/ubuntu1910" Node="n2" ExperimentName="midterm1" TeamName="CS4238-20-01">
     <Hardware>
       <Memory RAMSize="default"/>
       <RemoteDisplay enabled="true">
