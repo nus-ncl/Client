@@ -1,66 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <VM>
-  <Machine name="n1_ubuntu3" OSType="generic/ubuntu1910" Node="n1" ExperimentName="malware" TeamName="TechDemo">
-    <Hardware>
-      <Memory RAMSize="default"/>
-      <RemoteDisplay enabled="true">
-        <VRDEProperties>
-          <vrdeport value="12345"/>
-          <vrdeaddress value="127.0.0.1"/>
-          <vncport value="12345"/>
-        </VRDEProperties>
-      </RemoteDisplay>
-      <Network>
-        <Aadapter slot="0" enabled="true">
-          <NAT>
-          </NAT>
-        </Aadapter>
-        <Adapter slot="1" enabled="true">
-          <HostOnlyInterface name="vboxnet0" IP="172.16.1.101"/>
-        </Adapter>
-      </Network>
-      <SharedFolders>
-      </SharedFolders>
-    </Hardware>
-    <Port_Forwarding>
-      <Forwarding hostip="0.0.0.0" hostport="2201" guestport="22"/>
-    </Port_Forwarding>
-    <Software>
-      <Service name="essentials_common"/>
-      <Service name="python_sherlock_VM1"/>
-    </Software>
-  </Machine>
-  <Machine name="n1_ubuntu2" OSType="generic/ubuntu1910" Node="n1" ExperimentName="midterm1" TeamName="CS4238-20-01">
-    <Hardware>
-      <Memory RAMSize="default"/>
-      <RemoteDisplay enabled="true">
-        <VRDEProperties>
-          <vrdeport value="12346"/>
-          <vrdeaddress value="127.0.0.1"/>
-          <vncport value="12345"/>
-        </VRDEProperties>
-      </RemoteDisplay>
-      <Network>
-        <Aadapter slot="0" enabled="true">
-          <NAT>
-          </NAT>
-        </Aadapter>
-        <Adapter slot="1" enabled="true">
-          <HostOnlyInterface name="vboxnet0" IP="172.16.1.101"/>
-          <HostOnlyInterface name="vboxnet0" IP="172.16.1.102"/>
-        </Adapter>
-      </Network>
-      <SharedFolders>
-      </SharedFolders>
-    </Hardware>
-    <Port_Forwarding>
-       <Forwarding hostip="0.0.0.0" hostport="22346" guestport="22"/>
-    </Port_Forwarding>
-    <Software>
-      <Service name="essentials_common"/>
-    </Software>
-  </Machine>
-  <Machine name="n2_ubuntu1" OSType="generic/ubuntu1910" Node="n2" ExperimentName="midterm1" TeamName="CS4238-20-01">
+  <Machine name="ubuntu1" OSType="generic/ubuntu1910" Node="n1" ExperimentName="Exp_Name" TeamName="Team_Name">
     <Hardware>
       <Memory RAMSize="default"/>
       <RemoteDisplay enabled="true">
