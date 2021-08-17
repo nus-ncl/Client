@@ -94,7 +94,7 @@ sudo apt-get install qt5-default libxcb-xinerama0
 * python environment
 ```sh
 sudo apt-get install python3 python3-pip
-sudo pip3 install virtualenv 
+pip3 install virtualenv 
 ```
 
 * rdesktop
@@ -110,8 +110,12 @@ sudo apt-get install ssh-askpass-gnome ssh-askpass
 * Install all prerequisites
 ```sh
 brew install python@3.9
+pip3 install virtualenv
+ 
 brew install qt5
 brew install rdesktop
+
+
 ```
 * (**_optional_**) ssh-askpass
 ```sh
