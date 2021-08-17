@@ -60,7 +60,7 @@ It provides a clean GUI to automate the procedure of SSH tunneling, port binding
 
 ### Running Platform
 * [Ubuntu](https://ubuntu.com/)
-
+* MacOS
 
 
 
@@ -70,13 +70,9 @@ It provides a clean GUI to automate the procedure of SSH tunneling, port binding
 This is an instruction of how you to install prerequisites and run the Client tool locally successfully.
 
 ### Prerequisites
+Users must go through step1 & step2, latter of which depends on your OS.
+#### [Step1 Common]
 
-This is an example of how to list things you need to use the software and how to install them.
-* qt5
-```sh
-# export QT_DEBUG_PLUGINS=1 to prompt debug info
-sudo apt-get install qt5-default libxcb-xinerama0
-```
 
 * SSH Key generation and configuration
 ```sh
@@ -88,38 +84,70 @@ ssh-keygen -t rsa
 ssh-copy-id -i ~/.ssh/id_rsa username@user.ncl.sg
 ```
 
-* python3 & pip3
+#### [Step2 for ubuntu]
+* qt5
 ```sh
-sudo apt-get install python3 python3-pip
+# export QT_DEBUG_PLUGINS=1 to prompt debug info
+sudo apt-get install qt5-default libxcb-xinerama0
 ```
 
-* PySide2
+* python environment
 ```sh
-# 'requirements.txt' is at root directory of this repository 
-pip3 install -r requirements.txt
+sudo apt-get install python3 python3-pip
+sudo pip3 install virtualenv 
 ```
 
 * rdesktop
 ```sh
 sudo apt-get install rdesktop
 ```
+* (**_optional_**) ssh-askpass
+```sh
+sudo apt-get install ssh-askpass-gnome ssh-askpass
+```
+#### [Step2 for MacOS]
+* Install [Homebrew](https://brew.sh/)
+* Install all prerequisites
+```sh
+brew install python@3.9
+brew install qt5
+brew install rdesktop
+```
+* (**_optional_**) ssh-askpass
+```sh
+brew install theseal/ssh-askpass/ssh-askpass
+```
 
 ### Run
 
 1. Clone the repo
 ```sh
-git clone git@github.com:nus-ncl/Client.git
+git clone https://github.com/nus-ncl/Client.git
 ```
-2. Require your client.xml file of your remote machine.
+2. Create/Enter your virtual python environment
+```shell
+cd Client
+# Create
+python3 -m venv ./venv
+#Enter 
+source venv/bin/activate
+```
+3. Require your client.xml file of your remote machine.
 ```sh
 # client.xml file is generated from Conductor #
-# But I have provided a template client.xml in this repo which you can try #
+# You can ask admin/tutor for it
+# But I have provided a template client.xml in this repo
 ```
-3. Run
+4. Install dependencies & Run
 ```sh
-python3 main.py
+(venv) pip install -r requirements.txt
+(venv) python main.py
 ```
-
+5. Quit your virtual python environment
+```shell
+# Quit
+(venv)deactivate
+```
 
 <!-- USAGE EXAMPLES -->
 ## Usage
