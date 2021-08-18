@@ -12,7 +12,7 @@ from PySide2.QtWidgets import QFileDialog
 from ScrollUI import Ui_MainWindow
 
 
-class myThread(threading.Thread):
+class TunnelThread(threading.Thread):
 	def __init__(self, local_port, node, exp, team, ssh_port, username):
 		threading.Thread.__init__(self)
 		self.local_port = local_port
@@ -31,6 +31,17 @@ class myThread(threading.Thread):
 		#                        "/Users/hkwany/.ssh/id_rsa")
 		print("port forwarding started!")
 
+
+class CheckPortThread(threading.Thread):
+	def __init__(self, local_port):
+		threading.Thread.__init__(self)
+		self.local_port = local_port
+
+	def run(self):
+		while not Port.is_port_used('127.0.0.1', self.local_port):
+			print("SSH tunnel has not been set up, please wait.")
+			time.sleep(1)
+		print("SSH tunnel has been set up successfully")
 
 class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 	def __init__(self):
@@ -144,15 +155,18 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 					ssh_local_forward_cmd = "ssh -o StrictHostKeyChecking=no -fNT -L " + str(
 						local_port) + ":" + node + "." + exp + "." + team + ".ncl.sg:" + rdp_port + " " + username + "@users.ncl.sg"
 					print(ssh_local_forward_cmd)
-					thread1 = myThread(local_port, node, exp, team, rdp_port, username)
-					thread1.start()
+					ssh_thread = TunnelThread(local_port, node, exp, team, rdp_port, username)
+					ssh_thread.start()
+					check_port_thread = CheckPortThread(local_port)
+					check_port_thread.start()
 					# pro1 = subprocess.Popen(ssh_local_forward_cmd.split())
 					# pro1.wait()
 					# print(pro1.pid)
 					# self.tunnel_pid = pro1.pid
 					# print(self.tunnel_pid)
 
-					time.sleep(2)
+					# time.sleep(2)
+					check_port_thread.join()
 					rdesktop_cmd = "rdesktop -a 16 localhost:" + str(local_port)
 					print(rdesktop_cmd)
 					subprocess.run(rdesktop_cmd.split())
@@ -176,9 +190,10 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 				else:
 					ssh_local_forward_cmd = f"ssh -o StrictHostKeyChecking=no -fNT -L {str(local_port)}:{node}.{exp}.{team}.ncl.sg:{ssh_port} {username}@users.ncl.sg"
 					print(ssh_local_forward_cmd)
-					thread2 = myThread(local_port, node, exp, team, ssh_port, username)
-					thread2.start()
-
+					ssh_thread = TunnelThread(local_port, node, exp, team, ssh_port, username)
+					ssh_thread.start()
+					check_port_thread = CheckPortThread(local_port)
+					check_port_thread.start()
 					# My_SSH.port_forwarding(local_port, f"{node}.{exp}.{team}.ncl.sg", int(ssh_port), "users.ncl.sg", 22,
 					#                        username, "/Users/hkwany/.ssh/id_rsa")
 					# port_forwarding(12345,"n2.Enterprise.NCLSecurity.ncl.sg",22345,"users.ncl.sg",22,"khuang96","/Users/hkwany/.ssh/id_rsa")
@@ -186,7 +201,8 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 					# pro1 = subprocess.Popen(ssh_local_forward_cmd.split())
 					# pro1.wait()
 					# print(pro1.pid)
-					time.sleep(2)
+					# time.sleep(2)
+					check_port_thread.join()
 					ssh_cmd = "ssh -p " + str(local_port) + " -o StrictHostKeyChecking=no" + " vagrant@localhost"
 					print(ssh_cmd)
 					subprocess.run(ssh_cmd.split())
