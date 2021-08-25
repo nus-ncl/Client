@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <VM>
   <Machine name="ubuntu1" OSType="generic/ubuntu1910" Node="n1" ExperimentName="Exp_Name" TeamName="Team_Name">
     <Hardware>
