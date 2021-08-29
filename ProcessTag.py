@@ -223,28 +223,5 @@ if __name__ == '__main__':
 			for element in forwarding:
 				print(f"hostport:{element.getAttribute('hostport')},guestport:{element.getAttribute('guestport')}")
 		print('----')
-	# for machine in machines:
-	# 	print(machine.getAttribute('name'))
-	# 	forwarding = machine.getElementsByTagName("Forwarding")
-	# 	for element in forwarding:
-	# 		print(element.getAttribute('hostport'))
-	# 	print('----')
 
-
-	# for element in machines:
-	# 	print(element.getAttribute('name'))
-	# forwarding = dom_obj.getElementsByTagName("Forwarding")
-	# for element in forwarding:
-	# 	print(element.getAttribute("hostport"))
-
-	# xml_content = dom_obj.documentElement
-	# for i in range(len(xml_content.childNodes)):
-	# 	print(xml_content.childNodes[i])
-	# print(len(xml_content.childNodes))
-	# print(machines)
-
-		# print(f"{machine.getAttribute('name')}->")
-		# print(f"")
-		# for node in machine.childNodes:
-		# 	print(node)
 
