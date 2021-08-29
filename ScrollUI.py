@@ -152,8 +152,8 @@ class Ui_MainWindow(object):
                                MainWindow.doubleclick)
         self.pushButton.clicked.connect(lambda: MainWindow.openFile(self.cwd))
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
-        self.bg1.buttonClicked.connect(MainWindow.rbclicked)
-        self.bg2.buttonClicked.connect(MainWindow.rbclicked)
+        self.bg1.buttonClicked.connect(MainWindow.platform_Connection_Clicked)
+        self.bg2.buttonClicked.connect(MainWindow.platform_Connection_Clicked)
 
 
     def retranslateUi(self, MainWindow):

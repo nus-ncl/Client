@@ -1,5 +1,6 @@
 from PySide2.QtXml import (QDomDocument)
 from PySide2.QtCore import QFile, QFileInfo, QIODevice, QTextStream
+from xml.dom import minidom
 
 
 def importXmlDOM(filename):
@@ -32,186 +33,60 @@ def importXmlDOM(filename):
 			print(error)
 		return document
 
+
 # TODO: export and insert
-def exportXml(fname, movie):
-	CODEC = "UTF-8"
-	error = None
-	fh = None
-	try:
-		fh = QFile(fname)
-		if not fh.open(QIODevice.WriteOnly):
-			raise IOError(str(fh.errorString()))
-		stream = QTextStream(fh)
-		stream.setCodec(CODEC)
-		stream << ("<?xml version='1.0' encoding='{0}'?>\n"
-		           "<!DOCTYPE MOVIES>\n"
-		           "<MOVIES VERSION='1.0'>\n".format(CODEC))
-		stream << ("<MOVIE YEAR='{0}' MINUTES='{1}' "
-		           "ACQUIRED='{2}'>\n".format(movie.year,
-		                                      movie.minutes,
-		                                      movie.acquired)) \
-		<< "<TITLE>" << movie.title \
-		<< "</TITLE>\n<NOTES>"
-		if movie.notes:
-			stream << "\n" << movie.notes
-		stream << "\n</NOTES>\n</MOVIE>\n"
-		stream << "</MOVIES>\n"
-	except EnvironmentError as e:
-		error = "Failed to export: {0}".format(e)
-	finally:
-		if fh is not None:
-			fh.close()
-		if error is not None:
-			print(error)
-		print("Exported 1 movie records to {0}".format(
-			QFileInfo(fname).fileName()))
+def exportXml(fname):
+	# Generate Document Object Model Tree
+	DOMTree = minidom.Document()
 
+	# Generate and set all Elements and TextNodes
+	rootElement = DOMTree.createElement('Root')
+	emptyChild = DOMTree.createElement('emptyChild')
+	aChild = DOMTree.createElement('aChild')
+	aChild.setAttribute('attribute1', 'value1')
+	aChild.setAttribute('attribute2', 'value2')
 
-# def addNode(document,element):
-#     newElement = document.createElement("Machine")
-#     newElement.setAttribute("name","Nginx4")
-#     # element.appendChild(newElement)
-#     pass
+	bChild = DOMTree.createElement('bChild')
+	bChild.setAttribute('attribute', 'value')
 
-# def populateFromDOM(dom):
-#     root = dom.documentElement()
-#     # print(root.attribute("VERSION"))
-#     if root.tagName() != "MOVIES":
-#         raise ValueError("not a Movies XML file")
-#     node = root.firstChild()
-#
-#     while not node.isNull():
-#         if node.toElement().tagName() == "MOVIE":
-#             readMovieNode(node.toElement())
-#         node = node.nextSibling()
-#
-# def readMovieNode(element):
-#     def getText(node):
-#         child = node.firstChild()
-#         text = ""
-#         while not child.isNull():
-#             if child.nodeType() == QDomNode.TextNode:
-#                 text += child.toText().data()
-#             child = child.nextSibling()
-#         return text.strip()
-#
-#     year = int(element.attribute("YEAR"))
-#     minutes = int(element.attribute("MINUTES"))
-#     ymd = element.attribute("ACQUIRED").split("-")
-#     if len(ymd) != 3:
-#         raise ValueError("invalid acquired date {0}".format(
-#             str(element.attribute("ACQUIRED"))))
-#     acquired = datetime.date(int(ymd[0]), int(ymd[1]),
-#                              int(ymd[2]))
-#     title = notes = None
-#     node = element.firstChild()
-#     while title is None or notes is None:
-#         if node.isNull():
-#             raise ValueError("missing title or notes")
-#         if node.toElement().tagName() == "TITLE":
-#             title = getText(node)
-#         elif node.toElement().tagName() == "NOTES":
-#             notes = getText(node)
-#         node = node.nextSibling()
-#         # print('1',node.toElement().attribute("TITLE"))
-#         # print('2',node.toElement().attribute("NOTES"))
-#         print("title={},notes={}".format(title,notes))
-#     if not title:
-#         raise ValueError("missing title")
-#     print(title, year, minutes, acquired, notes)
+	cChild = DOMTree.createElement('cChild')
+	cChild.setAttribute('Attribute', 'Value')
 
-# def importSAX(self, fname):
-#     error = None
-#     fh = None
-#     try:
-#         handler = SaxMovieHandler(self)
-#         parser = QXmlSimpleReader()
-#         parser.setContentHandler(handler)
-#         parser.setErrorHandler(handler)
-#         fh = QFile(fname)
-#         input = QXmlInputSource(fh)
-#         if not parser.parse(input):
-#             raise ValueError(handler.error)
-#     except (IOError, OSError, ValueError) as e:
-#         error = "Failed to import: {0}".format(e)
-#     finally:
-#         if fh is not None:
-#             fh.close()
-#         if error is not None:
-#             print(error)
-#         self.__fname = ""
-#         print("Imported 1 movie records from {0}".format(
-#                 QFileInfo(fname).fileName()))
+	dChild = DOMTree.createElement('dChild')
+	eChild = DOMTree.createElement('eChild')
+	fChild = DOMTree.createElement('fChild')
 
-# class SaxMovieHandler(QXmlDefaultHandler):
-#
-#     def __init__(self, movies):
-#         super(SaxMovieHandler, self).__init__()
-#         self.movies = movies
-#         self.text = ""
-#         self.error = None
-#
-#     def clear(self):
-#         self.year = None
-#         self.minutes = None
-#         self.acquired = None
-#         self.title = None
-#         self.notes = None
-#
-#     def startElement(self, namespaceURI, localName, qName, attributes):
-#         if qName == "MOVIE":
-#             self.clear()
-#             self.year = int(attributes.value("YEAR"))
-#             self.minutes = int(attributes.value("MINUTES"))
-#             ymd = attributes.value("ACQUIRED").split("-")
-#             if len(ymd) != 3:
-#                 raise ValueError("invalid acquired date {0}".format(
-#                     str(attributes.value("ACQUIRED"))))
-#             self.acquired = datetime.date(int(ymd[0]),
-#                                           int(ymd[1]), int(ymd[2]))
-#         elif qName in ("TITLE", "NOTES"):
-#             self.text = ""
-#         return True
-#
-#     def characters(self, text):
-#         self.text += text
-#         return True
-#
-#     def endElement(self, namespaceURI, localName, qName):
-#         if qName == "MOVIE":
-#             if (self.year is None or self.minutes is None or
-#                     self.acquired is None or self.title is None or
-#                     self.notes is None or not self.title):
-#                 raise ValueError("incomplete movie record")
-#             print(self.title, self.year,
-#                   self.minutes, self.acquired,
-#                   decodedNewlines(self.notes))
-#
-#         elif qName == "TITLE":
-#             self.title = self.text.strip()
-#         elif qName == "NOTES":
-#             self.notes = self.text.strip()
-#         return True
-#
-#     def fatalError(self, exception):
-#         self.error = "parse error at line {0} column {1}: {2}".format(
-#             exception.lineNumber(), exception.columnNumber(),
-#             exception.message())
-#         return False
+	TextNode1 = DOMTree.createTextNode('Text1')
+	TextNode2 = DOMTree.createTextNode('Text2')
+	TextNode3 = DOMTree.createTextNode('Text3')
+	TextNode4 = DOMTree.createTextNode('Text4')
+
+	# rootElement is appended to the DOMTree
+	DOMTree.appendChild(rootElement)
+	# first-level tags are appended to the rootElement
+	rootElement.appendChild(aChild)
+	rootElement.appendChild(bChild)
+	rootElement.appendChild(cChild)
+	rootElement.appendChild(emptyChild)
+
+	# second-level tags are appended to the first-level tags
+	aChild.appendChild(TextNode1)
+
+	bChild.appendChild(dChild)
+	dChild.appendChild(TextNode2)
+
+	cChild.appendChild(eChild)
+	eChild.appendChild(TextNode3)
+	cChild.appendChild(fChild)
+	fChild.appendChild(TextNode4)
+
+	xml_str = DOMTree.toprettyxml(indent="\t", encoding="utf-8")
+
+	saved_file = f'{fname}.xml'
+
+	with open(saved_file, "wb") as f:
+		f.write(xml_str)
 
 
 if __name__ == '__main__':
-	doc = importXmlDOM("client.xml")
-	# Return root element of the document <VM>
-	docElem = doc.documentElement()
-	print(docElem.nodeType())
-	print(doc.toString())
-	# elements = doc.elementsByTagNa
-	node = docElem.firstChild()
-	while not node.isNull():
-		print(node.toElement().attribute('name'))
-		vrdeport = node.toElement().elementsByTagName('vrdeport')
-		for i in range(vrdeport.length()):
-			print(vrdeport.at(i).toElement().attribute('value'))
-		node = node.nextSibling()
-
+	exportXml('new')

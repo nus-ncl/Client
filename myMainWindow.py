@@ -50,15 +50,13 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 		self.ui.setupUi(self)
 		self.Node_QTreeWidgetItem = []
 		self.Populate(self.Node_QTreeWidgetItem)
-		self.platform = ''
-		self.connection_function = ''
-
-	# self.Machine = ProcessTag.getGlobalMachineAttribute(self.document, TagName, 'name')
+		self.platform = None
+		self.connection_function = None
 
 	def updateQTreeWidgetItem(self):
 		TagName = "Machine"
 
-		self.Machine = ProcessTag.getGlobalMachineAttribute(self.document, TagName, 'name')
+		Machine = ProcessTag.getGlobalMachineAttribute(self.document, TagName, 'name')
 		Node = ProcessTag.getGlobalMachineAttribute(self.document, TagName, 'Node')
 		Exp = ProcessTag.getGlobalMachineAttribute(self.document, TagName, 'ExperimentName')
 		Team = ProcessTag.getGlobalMachineAttribute(self.document, TagName, 'TeamName')
@@ -70,18 +68,17 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 		for i in range(len(Node_set)):
 			self.Node_QTreeWidgetItem.append(QtWidgets.QTreeWidgetItem(Node_set[i:i + 1]))
 
-		for i in range(len(self.Machine)):
-			Node_Belong_To = Node_set.index(Node[i])
-			child = QtWidgets.QTreeWidgetItem([self.Machine[i], Exp[i], Team[i]])
-			self.Node_QTreeWidgetItem[Node_Belong_To].addChild(child)
+		for i in range(len(Machine)):
+			node_Belong_To = Node_set.index(Node[i])
+			child = QtWidgets.QTreeWidgetItem([Machine[i], Exp[i], Team[i]])
+			self.Node_QTreeWidgetItem[node_Belong_To].addChild(child)
 
 		# clear previous treeWidget items and populate the new
 		self.ui.treeWidget.clear()
 		self.Populate(self.Node_QTreeWidgetItem)
 
-	def rbclicked(self):
+	def platform_Connection_Clicked(self):
 		sender = self.sender()
-		# print(sender)
 		if sender == self.ui.bg1:
 			if self.ui.bg1.checkedId() == 1:
 				self.platform = 'Linux'
@@ -90,7 +87,7 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 			elif self.ui.bg1.checkedId() == 3:
 				self.platform = 'MacOS'
 			else:
-				self.platform = ''
+				self.platform = None
 		else:
 			if self.ui.bg2.checkedId() == 4:
 				self.connection_function = 'RDP'
@@ -99,20 +96,12 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 			elif self.ui.bg2.checkedId() == 6:
 				self.connection_function = 'VNC'
 			else:
-				self.connection_function = ''
-
-	# print(self.info1)
-	# print(self.info2)
+				self.connection_function = None
 
 	def click(self):
 		print("Plz double click!")
 
 	def doubleclick(self, item, col):
-		# self.TagName = "VRDEProperties"
-		# self.Attributes = ["name", "value"]
-		# self.TagName = "vrdeport"
-		# self.Attributes = "value"
-		# self.vrde_port = {}
 		username = self.ui.lineEdit.text()
 		local_addr = '127.0.0.1'
 		local_port = 12345
@@ -133,13 +122,9 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 				Attributes = ["value"]
 				try:
 					output_dict = ProcessTag.getGlobalNodeTagAttributes(self.document, NodeName, TagName, Attributes)
-				# print(output_dict)
-				# for i in range(len(self.Machine)):
-				# 	vrde_port[self.Machine[i]] = output[i]
-
 				except ValueError as e:
 					print("Failed to import: {0}".format(e))
-				# print(output_dict)
+				print(output_dict)
 				if (not output_dict[machine]) or (output_dict[machine][0]['value'] == ''):
 					pass
 				else:
@@ -159,13 +144,6 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 					ssh_thread.start()
 					check_port_thread = CheckPortThread(local_port)
 					check_port_thread.start()
-					# pro1 = subprocess.Popen(ssh_local_forward_cmd.split())
-					# pro1.wait()
-					# print(pro1.pid)
-					# self.tunnel_pid = pro1.pid
-					# print(self.tunnel_pid)
-
-					# time.sleep(2)
 					check_port_thread.join()
 					rdesktop_cmd = "rdesktop -a 16 localhost:" + str(local_port)
 					print(rdesktop_cmd)
@@ -194,14 +172,6 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 					ssh_thread.start()
 					check_port_thread = CheckPortThread(local_port)
 					check_port_thread.start()
-					# My_SSH.port_forwarding(local_port, f"{node}.{exp}.{team}.ncl.sg", int(ssh_port), "users.ncl.sg", 22,
-					#                        username, "/Users/hkwany/.ssh/id_rsa")
-					# port_forwarding(12345,"n2.Enterprise.NCLSecurity.ncl.sg",22345,"users.ncl.sg",22,"khuang96","/Users/hkwany/.ssh/id_rsa")
-
-					# pro1 = subprocess.Popen(ssh_local_forward_cmd.split())
-					# pro1.wait()
-					# print(pro1.pid)
-					# time.sleep(2)
 					check_port_thread.join()
 					ssh_cmd = "ssh -p " + str(local_port) + " -o StrictHostKeyChecking=no" + " vagrant@localhost"
 					print(ssh_cmd)
@@ -210,10 +180,6 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 			if (self.connection_function == 'VNC'):
 				pass
 
-	# print("You doubleclick! {},{},{},{},{}".format(item.text(0),item.parent().text(0),item.text(1),item.text(2),col))
-	# subprocess.run(("rdesktop -a 16 localhost:" + str(local_port)).split())
-	# subprocess.run(("ssh -p " + str(local_port) + " vagrant@localhost").split())
-	# subprocess.run(("kill -9 " + str(self.tunnel_pid)).split())
 
 	def Populate(self, Node_QTreeWidgetItem):
 		self.ui.treeWidget.resize(600, 400)
@@ -221,12 +187,11 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 		self.ui.treeWidget.setHeaderLabels(["Node Name", "Experiment Name", "Team Name"])
 		self.ui.treeWidget.addTopLevelItems(Node_QTreeWidgetItem)
 
-	def openFile(self, filePath):
-		if os.path.exists(filePath):
-			path = QFileDialog.getOpenFileName(self, "Open File Dialog", filePath, "XML files(*.xml)")
+	def openFile(self, file_path):
+		if os.path.exists(file_path):
+			path = QFileDialog.getOpenFileName(self, "Open File Dialog", file_path, "XML files(*.xml)")
 		else:
 			path = QFileDialog.getOpenFileName(self, "Open File Dialog", "/", "XML files(*.xml)")
 		print(path)
 		self.document = IOXML.importXmlDOM(str(path[0]))
 		self.updateQTreeWidgetItem()
-# self.fileLineEdit.setText(str(path[0]))
