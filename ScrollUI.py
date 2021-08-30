@@ -166,7 +166,7 @@ class Ui_MainWindow(object):
         self.radioButton_2.setText(_translate("MainWindow", "Win"))
         self.radioButton.setText(_translate("MainWindow", "Linux"))
         self.radioButton_3.setText(_translate("MainWindow", "MacOS"))
-        self.radioButton_4.setText(_translate("MainWindow", "RDP"))
+        self.radioButton_4.setText(_translate("MainWindow", "Console"))
         self.radioButton_5.setText(_translate("MainWindow", "SSH"))
         self.radioButton_6.setText(_translate("MainWindow", "VNC"))
 

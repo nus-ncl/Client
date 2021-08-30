@@ -33,6 +33,8 @@ def importXmlDOM(filename):
 			print(error)
 		return document
 
+def parseXML(fname):
+	return minidom.parse(fname)
 
 # TODO: export and insert
 def exportXml(fname):
