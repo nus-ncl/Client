@@ -6,6 +6,7 @@ import IOXML
 import My_SSH
 import threading
 import time
+import webbrowser
 from pathlib import Path
 from PySide2 import QtWidgets
 from PySide2.QtWidgets import QFileDialog
@@ -75,7 +76,8 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 		# clear previous treeWidget items and populate the new
 		self.ui.treeWidget.clear()
 		self.Populate(self.Node_QTreeWidgetItem)
-		# self.Populate(root_QTreeWidgetItem)
+
+	# self.Populate(root_QTreeWidgetItem)
 
 	def platform_Connection_Clicked(self):
 		sender = self.sender()
@@ -107,127 +109,147 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 		local_port = 12345
 		while Port.is_port_used(local_addr, local_port):
 			local_port += 1
-		node = item.parent().text(0)
-		machine_name = item.text(0)
-		exp_name = item.text(1)
-		team_name = item.text(2)
+		print(item.parent())
+		if item.parent():
+			# machine doubleclick
+			node = item.parent().text(0)
+			machine_name = item.text(0)
+			exp_name = item.text(1)
+			team_name = item.text(2)
+			# vrde
+			if (self.platform == 'Linux'):
+				if (self.connection_function == 'Console'):
+					# VRDE Console
+					remoteDisplayEnabled = ProcessTag.getTagAttributeValue(self.document, 'RemoteDisplay', 'enabled')
+					remoteDisplayPort = ProcessTag.getTagAttributeValueWithCondition(self.document, 'Property', 'value',
+					                                                                 'name', 'TCP/Ports')
+					for index, enabled in enumerate(remoteDisplayEnabled):
+						if enabled == 'false':
+							remoteDisplayPort.insert(index, None)
+					machine_name_list = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'name')
+					for index, name in enumerate(machine_name_list):
+						if name == machine_name:
+							rdp_port = remoteDisplayPort[index]
+							break
 
-
-		# vrde
-		if (self.platform == 'Linux'):
-			if (self.connection_function == 'Console'):
-				# VRDE Console
-				remoteDisplayEnabled = ProcessTag.getTagAttributeValue(self.document,'RemoteDisplay','enabled')
-				remoteDisplayPort = ProcessTag.getTagAttributeValueWithCondition(self.document,'Property','value','name','TCP/Ports')
-				for index, enabled in enumerate(remoteDisplayEnabled):
-					if enabled == 'false':
-						remoteDisplayPort.insert(index, None)
-				machine_name_list = ProcessTag.getTagAttributeValue(self.document,'Machine','name')
-				for index, name in enumerate(machine_name_list):
-					if name == machine_name:
-						rdp_port = remoteDisplayPort[index]
-						break
-
-				# rdp_port = 0
-				# NodeName = "VRDEProperties"
-				# TagName = "vrdeport"
-				# Attributes = ["value"]
-				# try:
-				# 	output_dict = ProcessTag.getGlobalNodeTagAttributes(self.document, NodeName, TagName, Attributes)
-				# except ValueError as e:
-				# 	print("Failed to import: {0}".format(e))
-				# print(output_dict)
-				# if (not output_dict[machine]) or (output_dict[machine][0]['value'] == ''):
-				# 	pass
-				# else:
-				# 	rdp_port = output_dict[machine][0]['value']
-				if not rdp_port:
-					print("This VM's rdesktop port hasn't been set!")
-				else:
-					'''
-					-f: Go to background
-					-N: Do not execute a remote command. This is useful for just forwarding ports
-					-T: Disable pseudo-tty allocation
-					'''
-					ssh_local_forward_cmd = "ssh -o StrictHostKeyChecking=no -fNT -L " + str(
-						local_port) + ":" + node + "." + exp_name + "." + team_name + ".ncl.sg:" + rdp_port + " " + username + "@users.ncl.sg"
-					print(ssh_local_forward_cmd)
-					ssh_thread = TunnelThread(local_port, node, exp_name, team_name, rdp_port, username)
-					ssh_thread.start()
-					check_port_thread = CheckPortThread(local_port)
-					check_port_thread.start()
-					check_port_thread.join()
-					rdesktop_cmd = "rdesktop -a 16 localhost:" + str(local_port)
-					print(rdesktop_cmd)
-					subprocess.run(rdesktop_cmd.split())
-
-			if (self.connection_function == 'SSH'):
-				# SSH
-				hostport = None
-				guestport = None
-				NATNode = ProcessTag.getTagAttributeValue(self.document, 'NAT', 'enabled')
-				ForwardingNum = ProcessTag.getTextNodeValue(self.document, 'ForwardingNum')
-				# print(ForwardingNode)
-				for index, value in enumerate(NATNode):
-					if value == 'false':
-						ForwardingNum.insert(index, None)
-
-				ForwardingName = ProcessTag.getTagAttributeValue(self.document, 'Forwarding', 'name')
-				Forwardinghostport = ProcessTag.getTagAttributeValue(self.document, 'Forwarding', 'hostport')
-				Forwardingguestport = ProcessTag.getTagAttributeValue(self.document, 'Forwarding', 'guestport')
-				AllForwardings = []
-				for index in range(len(ForwardingName)):
-					AllForwardings.append((ForwardingName[index], Forwardinghostport[index], Forwardingguestport[index]))
-
-				Forwarding = []
-				start = 0
-				end = 0
-				for num in ForwardingNum:
-					if num:
-						end = end + int(num)
-						Forwarding.append(AllForwardings[start:end])
-						start = end
+					# rdp_port = 0
+					# NodeName = "VRDEProperties"
+					# TagName = "vrdeport"
+					# Attributes = ["value"]
+					# try:
+					# 	output_dict = ProcessTag.getGlobalNodeTagAttributes(self.document, NodeName, TagName, Attributes)
+					# except ValueError as e:
+					# 	print("Failed to import: {0}".format(e))
+					# print(output_dict)
+					# if (not output_dict[machine]) or (output_dict[machine][0]['value'] == ''):
+					# 	pass
+					# else:
+					# 	rdp_port = output_dict[machine][0]['value']
+					if not rdp_port:
+						print("This VM's rdesktop port hasn't been set!")
 					else:
-						Forwarding.append([])
+						'''
+						-f: Go to background
+						-N: Do not execute a remote command. This is useful for just forwarding ports
+						-T: Disable pseudo-tty allocation
+						'''
+						ssh_local_forward_cmd = "ssh -o StrictHostKeyChecking=no -fNT -L " + str(
+							local_port) + ":" + node + "." + exp_name + "." + team_name + ".ncl.sg:" + rdp_port + " " + username + "@users.ncl.sg"
+						print(ssh_local_forward_cmd)
+						ssh_thread = TunnelThread(local_port, node, exp_name, team_name, rdp_port, username)
+						ssh_thread.start()
+						check_port_thread = CheckPortThread(local_port)
+						check_port_thread.start()
+						check_port_thread.join()
+						rdesktop_cmd = "rdesktop -a 16 localhost:" + str(local_port)
+						print(rdesktop_cmd)
+						subprocess.run(rdesktop_cmd.split())
 
-				machine_name_list = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'name')
-				for index, name in enumerate(machine_name_list):
-					if name == machine_name:
-						for forwarding_entry in Forwarding[index]:
-							if forwarding_entry[0] == 'ssh':
-								hostport = forwarding_entry[1]
-								guestport = forwarding_entry[2]
-								break
-						break
-				# ssh_port = 0
-				# NodeName = "Port_Forwarding"
-				# TagName = "Forwarding"
-				# Attributes = ["hostip", "hostport", "guestport"]
-				# try:
-				# 	output_dict = ProcessTag.getGlobalNodeTagAttributes(self.document, NodeName, TagName, Attributes)
-				# except ValueError as e:
-				# 	print("Failed to import: {0}".format(e))
-				#
-				# for port_forwarding in output_dict[machine]:
-				# 	if port_forwarding['guestport'] == '22':
-				# 		ssh_port = port_forwarding['hostport']
+				if (self.connection_function == 'SSH'):
+					# SSH
+					hostport = None
+					guestport = None
+					NATNode = ProcessTag.getTagAttributeValue(self.document, 'NAT', 'enabled')
+					ForwardingNum = ProcessTag.getTextNodeValue(self.document, 'ForwardingNum')
+					# print(ForwardingNode)
+					for index, value in enumerate(NATNode):
+						if value == 'false':
+							ForwardingNum.insert(index, None)
 
-				if not hostport or not guestport:
-					print("This VM's SSH port hasn't been port forwarded!")
-				else:
-					ssh_local_forward_cmd = f"ssh -o StrictHostKeyChecking=no -fNT -L {str(local_port)}:{node}.{exp_name}.{team_name}.ncl.sg:{hostport} {username}@users.ncl.sg"
-					print(ssh_local_forward_cmd)
-					ssh_thread = TunnelThread(local_port, node, exp_name, team_name, hostport, username)
-					ssh_thread.start()
-					check_port_thread = CheckPortThread(local_port)
-					check_port_thread.start()
-					check_port_thread.join()
-					ssh_cmd = "ssh -p " + str(local_port) + " -o StrictHostKeyChecking=no" + " vagrant@localhost"
-					print(ssh_cmd)
-					subprocess.run(ssh_cmd.split())
+					ForwardingName = ProcessTag.getTagAttributeValue(self.document, 'Forwarding', 'name')
+					Forwardinghostport = ProcessTag.getTagAttributeValue(self.document, 'Forwarding', 'hostport')
+					Forwardingguestport = ProcessTag.getTagAttributeValue(self.document, 'Forwarding', 'guestport')
+					AllForwardings = []
+					for index in range(len(ForwardingName)):
+						AllForwardings.append(
+							(ForwardingName[index], Forwardinghostport[index], Forwardingguestport[index]))
 
+					Forwarding = []
+					start = 0
+					end = 0
+					for num in ForwardingNum:
+						if num:
+							end = end + int(num)
+							Forwarding.append(AllForwardings[start:end])
+							start = end
+						else:
+							Forwarding.append([])
+
+					machine_name_list = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'name')
+					for index, name in enumerate(machine_name_list):
+						if name == machine_name:
+							for forwarding_entry in Forwarding[index]:
+								if forwarding_entry[0] == 'ssh':
+									hostport = forwarding_entry[1]
+									guestport = forwarding_entry[2]
+									break
+							break
+					# ssh_port = 0
+					# NodeName = "Port_Forwarding"
+					# TagName = "Forwarding"
+					# Attributes = ["hostip", "hostport", "guestport"]
+					# try:
+					# 	output_dict = ProcessTag.getGlobalNodeTagAttributes(self.document, NodeName, TagName, Attributes)
+					# except ValueError as e:
+					# 	print("Failed to import: {0}".format(e))
+					#
+					# for port_forwarding in output_dict[machine]:
+					# 	if port_forwarding['guestport'] == '22':
+					# 		ssh_port = port_forwarding['hostport']
+
+					if not hostport or not guestport:
+						print("This VM's SSH port hasn't been port forwarded!")
+					else:
+						ssh_local_forward_cmd = f"ssh -o StrictHostKeyChecking=no -fNT -L {str(local_port)}:{node}.{exp_name}.{team_name}.ncl.sg:{hostport} {username}@users.ncl.sg"
+						print(ssh_local_forward_cmd)
+						ssh_thread = TunnelThread(local_port, node, exp_name, team_name, hostport, username)
+						ssh_thread.start()
+						check_port_thread = CheckPortThread(local_port)
+						check_port_thread.start()
+						check_port_thread.join()
+						ssh_cmd = "ssh -p " + str(local_port) + " -o StrictHostKeyChecking=no" + " vagrant@localhost"
+						print(ssh_cmd)
+						subprocess.run(ssh_cmd.split())
+		else:
+			# node doubleclick
+			node = item.text(0)
+			# print(node)
+			# print(type(node))
+			NodeList = ProcessTag.getTagAttributeValue(self.document,'Node','name')
+			VNCAddressList = ProcessTag.getTextNodeValue(self.document,'VNCAddress')
+			# print(NodeList)
+			# print(NodeList[1])
+			# print(type(NodeList[1]))
+			# print(VNCAddressList)
 			if (self.connection_function == 'VNC'):
-				pass
+				for index, value in enumerate(NodeList):
+					print(value)
+					print(node)
+					if value == node:
+						VNCAddress = VNCAddressList[index]
+						break
+				webbrowser.open(VNCAddress)
+
 
 	def Populate(self, Node_QTreeWidgetItem):
 		self.ui.treeWidget.resize(600, 400)
