@@ -122,7 +122,7 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 		# print(item.parent())
 		if item.parent():
 			# machine doubleclick
-			node = item.parent().text(0)
+			node_name = item.parent().text(0)
 			machine_name = item.text(0)
 			exp_name = item.text(1)
 			team_name = item.text(2)
@@ -153,7 +153,7 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 						# ssh_local_forward_cmd = "ssh -o StrictHostKeyChecking=no -fNT -L " + str(
 						# 	local_port) + ":" + node + "." + exp_name + "." + team_name + ".ncl.sg:" + rdp_port + " " + username + "@users.ncl.sg"
 						# print(ssh_local_forward_cmd)
-						ssh_thread = TunnelThread(local_port, node, exp_name, team_name, rdp_port, username)
+						ssh_thread = TunnelThread(local_port, node_name, exp_name, team_name, rdp_port, username)
 						ssh_thread.start()
 						check_port_thread = CheckPortThread(local_port)
 						check_port_thread.start()
@@ -207,7 +207,7 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 					else:
 						# ssh_local_forward_cmd = f"ssh -o StrictHostKeyChecking=no -fNT -L {str(local_port)}:{node}.{exp_name}.{team_name}.ncl.sg:{hostport} {username}@users.ncl.sg"
 						# print(ssh_local_forward_cmd)
-						ssh_thread = TunnelThread(local_port, node, exp_name, team_name, hostport, username)
+						ssh_thread = TunnelThread(local_port, node_name, exp_name, team_name, hostport, username)
 						ssh_thread.start()
 						check_port_thread = CheckPortThread(local_port)
 						check_port_thread.start()
