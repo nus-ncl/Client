@@ -53,7 +53,8 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 		self.Node_QTreeWidgetItem = []
 		self.Populate(self.Node_QTreeWidgetItem)
 		self.platform = None
-		self.connection_function = None
+		self.vm_connection_method = None
+		self.node_connection_method = None
 
 	def updateQTreeWidgetItem(self):
 		Machine = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'name')
@@ -90,15 +91,21 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 				self.platform = 'MacOS'
 			else:
 				self.platform = None
-		else:
+		elif sender == self.ui.bg2:
 			if self.ui.bg2.checkedId() == 4:
-				self.connection_function = 'Console'
+				self.vm_connection_method = 'Console'
 			elif self.ui.bg2.checkedId() == 5:
-				self.connection_function = 'SSH'
-			elif self.ui.bg2.checkedId() == 6:
-				self.connection_function = 'VNC'
+				self.vm_connection_method = 'SSH'
 			else:
-				self.connection_function = None
+				self.vm_connection_method = None
+		else:
+			# bg3
+			if self.ui.bg3.checkedId() == 6:
+				self.node_connection_method = 'VNC'
+			elif self.ui.bg3.checkedId() == 7:
+				self.node_connection_method = 'SSH'
+			else:
+				self.node_connection_method = None
 
 	def click(self):
 		print("Plz double click!")
@@ -109,7 +116,7 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 		local_port = 12345
 		while Port.is_port_used(local_addr, local_port):
 			local_port += 1
-		print(item.parent())
+		# print(item.parent())
 		if item.parent():
 			# machine doubleclick
 			node = item.parent().text(0)
@@ -118,7 +125,7 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 			team_name = item.text(2)
 			# vrde
 			if (self.platform == 'Linux'):
-				if (self.connection_function == 'Console'):
+				if (self.vm_connection_method == 'Console'):
 					# VRDE Console
 					remoteDisplayEnabled = ProcessTag.getTagAttributeValue(self.document, 'RemoteDisplay', 'enabled')
 					remoteDisplayPort = ProcessTag.getTagAttributeValueWithCondition(self.document, 'Property', 'value',
@@ -132,19 +139,6 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 							rdp_port = remoteDisplayPort[index]
 							break
 
-					# rdp_port = 0
-					# NodeName = "VRDEProperties"
-					# TagName = "vrdeport"
-					# Attributes = ["value"]
-					# try:
-					# 	output_dict = ProcessTag.getGlobalNodeTagAttributes(self.document, NodeName, TagName, Attributes)
-					# except ValueError as e:
-					# 	print("Failed to import: {0}".format(e))
-					# print(output_dict)
-					# if (not output_dict[machine]) or (output_dict[machine][0]['value'] == ''):
-					# 	pass
-					# else:
-					# 	rdp_port = output_dict[machine][0]['value']
 					if not rdp_port:
 						print("This VM's rdesktop port hasn't been set!")
 					else:
@@ -153,9 +147,9 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 						-N: Do not execute a remote command. This is useful for just forwarding ports
 						-T: Disable pseudo-tty allocation
 						'''
-						ssh_local_forward_cmd = "ssh -o StrictHostKeyChecking=no -fNT -L " + str(
-							local_port) + ":" + node + "." + exp_name + "." + team_name + ".ncl.sg:" + rdp_port + " " + username + "@users.ncl.sg"
-						print(ssh_local_forward_cmd)
+						# ssh_local_forward_cmd = "ssh -o StrictHostKeyChecking=no -fNT -L " + str(
+						# 	local_port) + ":" + node + "." + exp_name + "." + team_name + ".ncl.sg:" + rdp_port + " " + username + "@users.ncl.sg"
+						# print(ssh_local_forward_cmd)
 						ssh_thread = TunnelThread(local_port, node, exp_name, team_name, rdp_port, username)
 						ssh_thread.start()
 						check_port_thread = CheckPortThread(local_port)
@@ -165,7 +159,7 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 						print(rdesktop_cmd)
 						subprocess.run(rdesktop_cmd.split())
 
-				if (self.connection_function == 'SSH'):
+				if (self.vm_connection_method == 'SSH'):
 					# SSH
 					hostport = None
 					guestport = None
@@ -204,24 +198,12 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 									guestport = forwarding_entry[2]
 									break
 							break
-					# ssh_port = 0
-					# NodeName = "Port_Forwarding"
-					# TagName = "Forwarding"
-					# Attributes = ["hostip", "hostport", "guestport"]
-					# try:
-					# 	output_dict = ProcessTag.getGlobalNodeTagAttributes(self.document, NodeName, TagName, Attributes)
-					# except ValueError as e:
-					# 	print("Failed to import: {0}".format(e))
-					#
-					# for port_forwarding in output_dict[machine]:
-					# 	if port_forwarding['guestport'] == '22':
-					# 		ssh_port = port_forwarding['hostport']
 
 					if not hostport or not guestport:
 						print("This VM's SSH port hasn't been port forwarded!")
 					else:
-						ssh_local_forward_cmd = f"ssh -o StrictHostKeyChecking=no -fNT -L {str(local_port)}:{node}.{exp_name}.{team_name}.ncl.sg:{hostport} {username}@users.ncl.sg"
-						print(ssh_local_forward_cmd)
+						# ssh_local_forward_cmd = f"ssh -o StrictHostKeyChecking=no -fNT -L {str(local_port)}:{node}.{exp_name}.{team_name}.ncl.sg:{hostport} {username}@users.ncl.sg"
+						# print(ssh_local_forward_cmd)
 						ssh_thread = TunnelThread(local_port, node, exp_name, team_name, hostport, username)
 						ssh_thread.start()
 						check_port_thread = CheckPortThread(local_port)
@@ -232,24 +214,42 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 						subprocess.run(ssh_cmd.split())
 		else:
 			# node doubleclick
-			node = item.text(0)
-			# print(node)
-			# print(type(node))
+			node_name = item.text(0)
 			NodeList = ProcessTag.getTagAttributeValue(self.document,'Node','name')
 			VNCAddressList = ProcessTag.getTextNodeValue(self.document,'VNCAddress')
-			# print(NodeList)
-			# print(NodeList[1])
-			# print(type(NodeList[1]))
-			# print(VNCAddressList)
-			if (self.connection_function == 'VNC'):
+			if (self.node_connection_method == 'VNC'):
+				# node VNC
+				# web browser
 				for index, value in enumerate(NodeList):
-					print(value)
-					print(node)
-					if value == node:
+					if value == node_name:
 						VNCAddress = VNCAddressList[index]
 						break
 				webbrowser.open(VNCAddress)
 
+			elif (self.node_connection_method == 'SSH'):
+				# node SSH
+				# SSH
+				guestport = 22
+				node_name_list = ProcessTag.getTagAttributeValue(self.document,'Node','name')
+				exp_name_list = ProcessTag.getTagAttributeValue(self.document,'Node','ExperimentName')
+				team_name_list = ProcessTag.getTagAttributeValue(self.document,'Node','TeamName')
+
+				for index, value in enumerate(node_name_list):
+					if value == node_name:
+						exp_name = exp_name_list[index]
+						team_name = team_name_list[index]
+						break
+
+				# ssh_local_forward_cmd = f"ssh -o StrictHostKeyChecking=no -fNT -L {str(local_port)}:{node_name}.{exp_name}.{team_name}.ncl.sg:{guestport} {username}@users.ncl.sg"
+				# print(ssh_local_forward_cmd)
+				ssh_thread = TunnelThread(local_port, node_name, exp_name, team_name, guestport, username)
+				ssh_thread.start()
+				check_port_thread = CheckPortThread(local_port)
+				check_port_thread.start()
+				check_port_thread.join()
+				ssh_cmd = "ssh -p " + str(local_port) + " -o StrictHostKeyChecking=no " + username + "@localhost"
+				print(ssh_cmd)
+				subprocess.run(ssh_cmd.split())
 
 	def Populate(self, Node_QTreeWidgetItem):
 		self.ui.treeWidget.resize(600, 400)
@@ -263,6 +263,5 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 		else:
 			path = QFileDialog.getOpenFileName(self, "Open File Dialog", "/", "XML files(*.xml)")
 		print(path)
-		# self.document = IOXML.importXmlDOM(str(path[0]))
 		self.document = IOXML.parseXML(str(path[0]))
 		self.updateQTreeWidgetItem()
