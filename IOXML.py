@@ -36,6 +36,7 @@ def importXmlDOM(filename):
 def parseXML(fname):
 	return minidom.parse(fname)
 
+
 # TODO: export and insert
 def exportXml(fname):
 	# Generate Document Object Model Tree

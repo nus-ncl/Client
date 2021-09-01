@@ -62,6 +62,7 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 		Exp = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'ExperimentName')
 		Team = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'TeamName')
 
+
 		Node_set = list(set(Node))
 		Node_set.sort()
 
@@ -74,11 +75,10 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 			machine = QtWidgets.QTreeWidgetItem([Machine[i], Exp[i], Team[i]])
 			self.Node_QTreeWidgetItem[node_Belong_To].addChild(machine)
 
+
 		# clear previous treeWidget items and populate the new
 		self.ui.treeWidget.clear()
 		self.Populate(self.Node_QTreeWidgetItem)
-
-	# self.Populate(root_QTreeWidgetItem)
 
 	def platform_Connection_Clicked(self):
 		sender = self.sender()
@@ -92,6 +92,7 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 			else:
 				self.platform = None
 		elif sender == self.ui.bg2:
+
 			if self.ui.bg2.checkedId() == 4:
 				self.vm_connection_method = 'Console'
 			elif self.ui.bg2.checkedId() == 5:
@@ -107,10 +108,12 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 			else:
 				self.node_connection_method = None
 
+
 	def click(self):
 		print("Plz double click!")
 
 	def doubleclick(self, item):
+
 		username = self.ui.lineEdit.text()
 		local_addr = '127.0.0.1'
 		local_port = 12345
@@ -250,6 +253,7 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 				ssh_cmd = "ssh -p " + str(local_port) + " -o StrictHostKeyChecking=no " + username + "@localhost"
 				print(ssh_cmd)
 				subprocess.run(ssh_cmd.split())
+
 
 	def Populate(self, Node_QTreeWidgetItem):
 		self.ui.treeWidget.resize(600, 400)
