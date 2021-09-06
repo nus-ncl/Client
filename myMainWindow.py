@@ -28,8 +28,6 @@ class TunnelThread(threading.Thread):
 		My_SSH.port_forwarding(self.local_port, f"{self.node}.{self.exp}.{self.team}.ncl.sg", int(self.ssh_port),
 		                       "users.ncl.sg", 22, self.username,
 		                       f"{home}/.ssh/id_rsa")
-		# My_SSH.port_forwarding(12345, "n2.Enterprise.NCLSecurity.ncl.sg", 22345, "users.ncl.sg", 22, "khuang96",
-		#                        "/Users/hkwany/.ssh/id_rsa")
 		print("port forwarding started!")
 
 
@@ -119,7 +117,6 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 		local_port = 12345
 		while Port.is_port_used(local_addr, local_port):
 			local_port += 1
-		# print(item.parent())
 		if item.parent():
 			# machine doubleclick
 			node_name = item.parent().text(0)
@@ -127,7 +124,7 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 			exp_name = item.text(1)
 			team_name = item.text(2)
 			# vrde
-			if (self.platform == 'Linux'):
+			if (self.platform == 'Linux' or self.platform == 'MacOS'):
 				if (self.vm_connection_method == 'Console'):
 					# VRDE Console
 					remoteDisplayEnabled = ProcessTag.getTagAttributeValue(self.document, 'RemoteDisplay', 'enabled')
@@ -150,9 +147,6 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 						-N: Do not execute a remote command. This is useful for just forwarding ports
 						-T: Disable pseudo-tty allocation
 						'''
-						# ssh_local_forward_cmd = "ssh -o StrictHostKeyChecking=no -fNT -L " + str(
-						# 	local_port) + ":" + node + "." + exp_name + "." + team_name + ".ncl.sg:" + rdp_port + " " + username + "@users.ncl.sg"
-						# print(ssh_local_forward_cmd)
 						ssh_thread = TunnelThread(local_port, node_name, exp_name, team_name, rdp_port, username)
 						ssh_thread.start()
 						check_port_thread = CheckPortThread(local_port)
@@ -205,8 +199,6 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 					if not hostport or not guestport:
 						print("This VM's SSH port hasn't been port forwarded!")
 					else:
-						# ssh_local_forward_cmd = f"ssh -o StrictHostKeyChecking=no -fNT -L {str(local_port)}:{node}.{exp_name}.{team_name}.ncl.sg:{hostport} {username}@users.ncl.sg"
-						# print(ssh_local_forward_cmd)
 						ssh_thread = TunnelThread(local_port, node_name, exp_name, team_name, hostport, username)
 						ssh_thread.start()
 						check_port_thread = CheckPortThread(local_port)
@@ -243,8 +235,6 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 						team_name = team_name_list[index]
 						break
 
-				# ssh_local_forward_cmd = f"ssh -o StrictHostKeyChecking=no -fNT -L {str(local_port)}:{node_name}.{exp_name}.{team_name}.ncl.sg:{guestport} {username}@users.ncl.sg"
-				# print(ssh_local_forward_cmd)
 				ssh_thread = TunnelThread(local_port, node_name, exp_name, team_name, guestport, username)
 				ssh_thread.start()
 				check_port_thread = CheckPortThread(local_port)
