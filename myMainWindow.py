@@ -1,4 +1,5 @@
 import os
+import base64
 import subprocess
 import Port
 import ProcessTag
@@ -42,6 +43,15 @@ class CheckPortThread(threading.Thread):
 			time.sleep(1)
 		print("SSH tunnel has been set up successfully")
 
+class WSSH_Thread(threading.Thread):
+	def __init__(self, wssh_port):
+		threading.Thread.__init__(self)
+		self.wssh_port = wssh_port
+
+	def run(self):
+		wssh_cmd = "wssh --port=" + str(self.wssh_port) + " &"
+		print(wssh_cmd)
+		subprocess.Popen(wssh_cmd.split())
 
 class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 	def __init__(self):
@@ -224,6 +234,11 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 			elif (self.node_connection_method == 'SSH'):
 				# node SSH
 				# SSH
+				node_user='localuser'
+				node_password='localuser'
+				node_password_bytes = node_password.encode('utf-8')
+				node_password_base64_bytes=base64.b64encode(node_password_bytes)
+				node_password_base64 = node_password_base64_bytes.decode('utf')
 				guestport = 22
 				node_name_list = ProcessTag.getTagAttributeValue(self.document,'Node','name')
 				exp_name_list = ProcessTag.getTagAttributeValue(self.document,'Node','ExperimentName')
@@ -240,10 +255,16 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 				check_port_thread = CheckPortThread(local_port)
 				check_port_thread.start()
 				check_port_thread.join()
-				ssh_cmd = "ssh -p " + str(local_port) + " -o StrictHostKeyChecking=no " + username + "@localhost"
-				print(ssh_cmd)
-				subprocess.run(ssh_cmd.split())
-
+				wssh_port = 8001
+				while Port.is_port_used(local_addr, wssh_port):
+					wssh_port += 1
+				wssh_thread=WSSH_Thread(wssh_port)
+				wssh_thread.start()
+				check_port_thread = CheckPortThread(wssh_port)
+				check_port_thread.start()
+				check_port_thread.join()
+				print("http://localhost:"+str(wssh_port)+"/?hostname=localhost&port="+str(local_port)+"&username="+node_user+"&password="+node_password_base64)
+				webbrowser.open("http://localhost:"+str(wssh_port)+"/?hostname=localhost&port="+str(local_port)+"&username="+node_user+"&password="+node_password_base64)
 
 	def Populate(self, Node_QTreeWidgetItem):
 		self.ui.treeWidget.resize(600, 400)
