@@ -285,7 +285,6 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 				check_port_thread = CheckPortThread(wssh_port)
 				check_port_thread.start()
 				check_port_thread.join()
-				time.sleep(2)
 				print("http://localhost:"+str(wssh_port)+"/?hostname=localhost&port="+str(local_port)+"&username="+node_user+"&password="+node_password_base64)
 				webbrowser.open("http://localhost:"+str(wssh_port)+"/?hostname=localhost&port="+str(local_port)+"&username="+node_user+"&password="+node_password_base64)
 
