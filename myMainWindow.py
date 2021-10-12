@@ -43,6 +43,7 @@ class CheckPortThread(threading.Thread):
 			time.sleep(1)
 		print("SSH tunnel has been set up successfully")
 
+
 class WSSH_Thread(threading.Thread):
 	def __init__(self, wssh_port):
 		threading.Thread.__init__(self)
@@ -52,6 +53,7 @@ class WSSH_Thread(threading.Thread):
 		wssh_cmd = "wssh --port=" + str(self.wssh_port) + " &"
 		print(wssh_cmd)
 		subprocess.Popen(wssh_cmd.split())
+
 
 class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 	def __init__(self):
@@ -70,7 +72,6 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 		Exp = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'ExperimentName')
 		Team = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'TeamName')
 
-
 		Node_set = list(set(Node))
 		Node_set.sort()
 
@@ -82,7 +83,6 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 			node_Belong_To = Node_set.index(Node[i])
 			machine = QtWidgets.QTreeWidgetItem([Machine[i], Exp[i], Team[i]])
 			self.Node_QTreeWidgetItem[node_Belong_To].addChild(machine)
-
 
 		# clear previous treeWidget items and populate the new
 		self.ui.treeWidget.clear()
@@ -115,7 +115,6 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 				self.node_connection_method = 'SSH'
 			else:
 				self.node_connection_method = None
-
 
 	def click(self):
 		print("Plz double click!")
@@ -222,49 +221,70 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 			node_name = item.text(0)
 			if (self.node_connection_method == 'VNC'):
 				# node VNC
-				NodeList = ProcessTag.getTagAttributeValue(self.document,'Node','name')
-				VNCEnableList = ProcessTag.getTagAttributeValue(self.document,'VNC','enabled')
-				VNCPortList = ProcessTag.getTextNodeValue(self.document,'VNCPort')
-				node_name_list = ProcessTag.getTagAttributeValue(self.document,'Node','name')
-				exp_name_list = ProcessTag.getTagAttributeValue(self.document,'Node','ExperimentName')
-				team_name_list = ProcessTag.getTagAttributeValue(self.document,'Node','TeamName')
-				for index, value in enumerate(node_name_list):
-					if value == node_name:
-						exp_name = exp_name_list[index]
-						team_name = team_name_list[index]
-						if VNCEnableList[index] == "false":
-							print('VNC or VNCPort has not been set for this node')
-							break
-						else:
-							vnc_port = VNCPortList[index]
-							ssh_thread = TunnelThread(local_port, node_name, exp_name, team_name, vnc_port, username)
-							ssh_thread.start()
-							check_port_thread = CheckPortThread(local_port)
-							check_port_thread.start()
-							check_port_thread.join()
-							vnc_cmd = "open vnc://127.0.0.1:" + str(local_port)
-							print(vnc_cmd)
-							subprocess.run(vnc_cmd.split())
-						break
-
-				# for index, value in enumerate(NodeList):
-				# 	if value == node_name:
-				# 		VNCAddress = VNCAddressList[index]
-				# 		break
-				# webbrowser.open(VNCAddress)
-
+				if self.platform is None:
+					print("Please select your running platform")
+				else:
+					VNCEnableList = ProcessTag.getTagAttributeValue(self.document, 'VNC', 'enabled')
+					VNCPortList = ProcessTag.getTextNodeValue(self.document, 'VNCPort')
+					node_name_list = ProcessTag.getTagAttributeValue(self.document, 'Node', 'name')
+					exp_name_list = ProcessTag.getTagAttributeValue(self.document, 'Node', 'ExperimentName')
+					team_name_list = ProcessTag.getTagAttributeValue(self.document, 'Node', 'TeamName')
+					for index, value in enumerate(node_name_list):
+						if value == node_name:
+							exp_name = exp_name_list[index]
+							team_name = team_name_list[index]
+							if VNCEnableList[index] == "false":
+								print('VNC or VNCPort has not been set for this node')
+								break
+							else:
+								vnc_port = VNCPortList[index]
+								ssh_thread = TunnelThread(local_port, node_name, exp_name, team_name, vnc_port,
+								                          username)
+								ssh_thread.start()
+								check_port_thread = CheckPortThread(local_port)
+								check_port_thread.start()
+								check_port_thread.join()
+								if self.platform == 'MacOS':
+									# VNCEnableList = ProcessTag.getTagAttributeValue(self.document, 'VNC', 'enabled')
+									# VNCPortList = ProcessTag.getTextNodeValue(self.document, 'VNCPort')
+									# node_name_list = ProcessTag.getTagAttributeValue(self.document, 'Node', 'name')
+									# exp_name_list = ProcessTag.getTagAttributeValue(self.document, 'Node', 'ExperimentName')
+									# team_name_list = ProcessTag.getTagAttributeValue(self.document, 'Node', 'TeamName')
+									# for index, value in enumerate(node_name_list):
+									# 	if value == node_name:
+									# 		exp_name = exp_name_list[index]
+									# 		team_name = team_name_list[index]
+									# 		if VNCEnableList[index] == "false":
+									# 			print('VNC or VNCPort has not been set for this node')
+									# 			break
+									# 		else:
+									# 			vnc_port = VNCPortList[index]
+									# 			ssh_thread = TunnelThread(local_port, node_name, exp_name, team_name, vnc_port,
+									# 			                          username)
+									# 			ssh_thread.start()
+									# 			check_port_thread = CheckPortThread(local_port)
+									# 			check_port_thread.start()
+									# 			check_port_thread.join()
+									vnc_cmd = "open vnc://127.0.0.1:" + str(local_port)
+								elif self.platform == 'Linux':
+									vnc_cmd = "vncviewer 127.0.0.1:" + str(local_port)
+								elif self.platform == 'Win':
+									vnc_cmd = "vncviewer 127.0.0.1:" + str(local_port)
+								print(vnc_cmd)
+								subprocess.run(vnc_cmd.split())
+								break
 			elif (self.node_connection_method == 'SSH'):
 				# node SSH
 				# SSH
-				node_user='localuser'
-				node_password='localuser'
+				node_user = 'localuser'
+				node_password = 'localuser'
 				node_password_bytes = node_password.encode('utf-8')
-				node_password_base64_bytes=base64.b64encode(node_password_bytes)
+				node_password_base64_bytes = base64.b64encode(node_password_bytes)
 				node_password_base64 = node_password_base64_bytes.decode('utf')
 				guestport = 22
-				node_name_list = ProcessTag.getTagAttributeValue(self.document,'Node','name')
-				exp_name_list = ProcessTag.getTagAttributeValue(self.document,'Node','ExperimentName')
-				team_name_list = ProcessTag.getTagAttributeValue(self.document,'Node','TeamName')
+				node_name_list = ProcessTag.getTagAttributeValue(self.document, 'Node', 'name')
+				exp_name_list = ProcessTag.getTagAttributeValue(self.document, 'Node', 'ExperimentName')
+				team_name_list = ProcessTag.getTagAttributeValue(self.document, 'Node', 'TeamName')
 
 				for index, value in enumerate(node_name_list):
 					if value == node_name:
@@ -280,13 +300,15 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 				wssh_port = 8001
 				while Port.is_port_used(local_addr, wssh_port):
 					wssh_port += 1
-				wssh_thread=WSSH_Thread(wssh_port)
+				wssh_thread = WSSH_Thread(wssh_port)
 				wssh_thread.start()
 				check_port_thread = CheckPortThread(wssh_port)
 				check_port_thread.start()
 				check_port_thread.join()
-				print("http://localhost:"+str(wssh_port)+"/?hostname=localhost&port="+str(local_port)+"&username="+node_user+"&password="+node_password_base64)
-				webbrowser.open("http://localhost:"+str(wssh_port)+"/?hostname=localhost&port="+str(local_port)+"&username="+node_user+"&password="+node_password_base64)
+				print("http://localhost:" + str(wssh_port) + "/?hostname=localhost&port=" + str(
+					local_port) + "&username=" + node_user + "&password=" + node_password_base64)
+				webbrowser.open("http://localhost:" + str(wssh_port) + "/?hostname=localhost&port=" + str(
+					local_port) + "&username=" + node_user + "&password=" + node_password_base64)
 
 	def Populate(self, Node_QTreeWidgetItem):
 		self.ui.treeWidget.resize(600, 400)
