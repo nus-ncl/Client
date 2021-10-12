@@ -220,16 +220,38 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 		else:
 			# node doubleclick
 			node_name = item.text(0)
-			NodeList = ProcessTag.getTagAttributeValue(self.document,'Node','name')
-			VNCAddressList = ProcessTag.getTextNodeValue(self.document,'VNCAddress')
 			if (self.node_connection_method == 'VNC'):
 				# node VNC
-				# web browser
-				for index, value in enumerate(NodeList):
+				NodeList = ProcessTag.getTagAttributeValue(self.document,'Node','name')
+				VNCEnableList = ProcessTag.getTagAttributeValue(self.document,'VNC','enabled')
+				VNCPortList = ProcessTag.getTextNodeValue(self.document,'VNCPort')
+				node_name_list = ProcessTag.getTagAttributeValue(self.document,'Node','name')
+				exp_name_list = ProcessTag.getTagAttributeValue(self.document,'Node','ExperimentName')
+				team_name_list = ProcessTag.getTagAttributeValue(self.document,'Node','TeamName')
+				for index, value in enumerate(node_name_list):
 					if value == node_name:
-						VNCAddress = VNCAddressList[index]
+						exp_name = exp_name_list[index]
+						team_name = team_name_list[index]
+						if VNCEnableList[index] == "false":
+							print('VNC or VNCPort has not been set for this node')
+							break
+						else:
+							vnc_port = VNCPortList[index]
+							ssh_thread = TunnelThread(local_port, node_name, exp_name, team_name, vnc_port, username)
+							ssh_thread.start()
+							check_port_thread = CheckPortThread(local_port)
+							check_port_thread.start()
+							check_port_thread.join()
+							vnc_cmd = "open vnc://127.0.0.1:" + str(local_port)
+							print(vnc_cmd)
+							subprocess.run(vnc_cmd.split())
 						break
-				webbrowser.open(VNCAddress)
+
+				# for index, value in enumerate(NodeList):
+				# 	if value == node_name:
+				# 		VNCAddress = VNCAddressList[index]
+				# 		break
+				# webbrowser.open(VNCAddress)
 
 			elif (self.node_connection_method == 'SSH'):
 				# node SSH
@@ -263,6 +285,7 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 				check_port_thread = CheckPortThread(wssh_port)
 				check_port_thread.start()
 				check_port_thread.join()
+				time.sleep(2)
 				print("http://localhost:"+str(wssh_port)+"/?hostname=localhost&port="+str(local_port)+"&username="+node_user+"&password="+node_password_base64)
 				webbrowser.open("http://localhost:"+str(wssh_port)+"/?hostname=localhost&port="+str(local_port)+"&username="+node_user+"&password="+node_password_base64)
 
