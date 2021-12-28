@@ -158,6 +158,7 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         #     else:
         #         self.node_connection_method = None
 
+
     def click(self):
         print("Plz double click!")
 
@@ -474,3 +475,4 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.updateQTreeWidgetItem()
         self.browser.load(QUrl(self.url))
         self.browser.show()
+

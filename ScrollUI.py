@@ -252,7 +252,6 @@ class Ui_MainWindow(object):
         self.label_3.setText(_translate("MainWindow", "XML File"))
         self.label_platform.setText(_translate("MainWindow", "----------Local Platform-------------"))
         self.label_Connection.setText(_translate("MainWindow", "-------Connection Method---------"))
-        # self.label_Node_Connection.setText(_translate("MainWindow", "--------Node Connection--------"))
         self.pushButton.setText(_translate("MainWindow", "XML"))
         self.radioButton_2.setText(_translate("MainWindow", "Win"))
         self.radioButton.setText(_translate("MainWindow", "Linux"))
