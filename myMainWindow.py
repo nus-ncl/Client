@@ -9,10 +9,10 @@ import threading
 import time
 import webbrowser
 from pathlib import Path
-from PySide2 import QtWidgets
-from PySide2.QtWidgets import QFileDialog
+from PySide6 import QtWidgets
+from PySide6.QtWidgets import QFileDialog
 from ScrollUI import Ui_MainWindow
-
+from PySide6.QtCore import QUrl
 
 class TunnelThread(threading.Thread):
     def __init__(self, local_port, node, exp, team, ssh_port, username):
@@ -70,16 +70,18 @@ class WSSH_Thread(threading.Thread):
 
 
 class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
-    def __init__(self):
+    def __init__(self, browser):
         super(myMainWindow, self).__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.Node_QTreeWidgetItem = []
         self.platform = None
         self.target_platform = None
+        self.url = None
         self.vm_connection_method = None
         self.node_connection_method = None
         self.Populate(self.Node_QTreeWidgetItem)
+        self.browser = browser
 
     def updateQTreeWidgetItem(self):
         if self.target_platform == 'deter':
@@ -462,4 +464,7 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         print(path)
         self.document = IOXML.parseXML(str(path[0]))
         self.target_platform = ProcessTag.getRootElementAttributeValue(self.document, 'platform')
+        self.url = ProcessTag.getRootElementAttributeValue(self.document, 'url')
         self.updateQTreeWidgetItem()
+        self.browser.load(QUrl(self.url))
+        self.browser.show()

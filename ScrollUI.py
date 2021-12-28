@@ -7,8 +7,8 @@
 # WARNING! All changes made in this file will be lost!
 
 import os
-from PySide2 import QtCore, QtGui, QtWidgets
-
+import PySide6
+from PySide6 import QtCore, QtGui, QtWidgets
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -21,6 +21,7 @@ class Ui_MainWindow(object):
         # 1
         self.verticalLayoutWidget = QtWidgets.QWidget(self.centralwidget)
         self.verticalLayoutWidget.setGeometry(QtCore.QRect(130, 120, 471, 241))
+        # self.verticalLayoutWidget.setGeometry(QtCore.QRect(60, 60, 60, 60))
         self.verticalLayoutWidget.setObjectName("verticalLayoutWidget")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.verticalLayoutWidget)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
@@ -45,7 +46,7 @@ class Ui_MainWindow(object):
         font.setBold(True)
         font.setItalic(False)
         font.setUnderline(False)
-        font.setWeight(75)
+        font.setWeight(PySide6.QtGui.QFont.Weight(75))
         self.label.setFont(font)
         self.label.setAlignment(QtCore.Qt.AlignCenter)
         self.label.setObjectName("label")
@@ -108,15 +109,17 @@ class Ui_MainWindow(object):
         # Platform:
         self.horizontalLayout1 = QtWidgets.QHBoxLayout()
         self.horizontalLayout1.setObjectName("horizontalLayout1")
-        spacerItemplatformLeft = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItemplatformLeft = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding,
+                                                       QtWidgets.QSizePolicy.Minimum)
         self.label_platform = QtWidgets.QLabel(self.widget)
         self.label_platform.setObjectName("label_platform")
-        spacerItemplatformRight = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItemplatformRight = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding,
+                                                        QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout1.addItem(spacerItemplatformLeft)
         self.horizontalLayout1.addWidget(self.label_platform)
         self.horizontalLayout1.addItem(spacerItemplatformRight)
         self.verticalLayout.addLayout(self.horizontalLayout1)
-        
+
         #
         self.horizontalLayout2 = QtWidgets.QHBoxLayout()
         self.horizontalLayout2.setObjectName("horizontalLayout2")
@@ -145,10 +148,12 @@ class Ui_MainWindow(object):
         # VM Connection
         self.horizontalLayout3 = QtWidgets.QHBoxLayout()
         self.horizontalLayout3.setObjectName("horizontalLayout3")
-        spacerItemVMConnectionLeft = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItemVMConnectionLeft = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding,
+                                                           QtWidgets.QSizePolicy.Minimum)
         self.label_VM_Connection = QtWidgets.QLabel(self.widget)
         self.label_VM_Connection.setObjectName("label_VM_Connection")
-        spacerItemVMConnectionRight = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItemVMConnectionRight = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding,
+                                                            QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout3.addItem(spacerItemVMConnectionLeft)
         self.horizontalLayout3.addWidget(self.label_VM_Connection)
         self.horizontalLayout3.addItem(spacerItemVMConnectionRight)
@@ -182,10 +187,12 @@ class Ui_MainWindow(object):
         # Node Connection
         self.horizontalLayout5 = QtWidgets.QHBoxLayout()
         self.horizontalLayout5.setObjectName("horizontalLayout5")
-        spacerItemNodeConnectionLeft = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItemNodeConnectionLeft = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding,
+                                                             QtWidgets.QSizePolicy.Minimum)
         self.label_Node_Connection = QtWidgets.QLabel(self.widget)
         self.label_Node_Connection.setObjectName("label_Node_Connection")
-        spacerItemNodeConnectionRight = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItemNodeConnectionRight = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding,
+                                                              QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout5.addItem(spacerItemNodeConnectionLeft)
         self.horizontalLayout5.addWidget(self.label_Node_Connection)
         self.horizontalLayout5.addItem(spacerItemNodeConnectionRight)
@@ -205,6 +212,26 @@ class Ui_MainWindow(object):
         self.radioButton_7.setObjectName("radioButton_7")
         self.horizontalLayout6.addWidget(self.radioButton_7)
         self.verticalLayout.addLayout(self.horizontalLayout6)
+
+        # last added
+        # self.horizontalLayout7 = QtWidgets.QHBoxLayout()
+        # self.horizontalLayout7.setObjectName("horizontalLayout7")
+        # self.secondwindow =QWebEngineView()
+        # self.secondwindow.setGeometry(QtCore.QRect(280, 382, 208, 64))
+        # self.secondwindow.load(QUrl("file:///Users/kanghuang/Downloads/notion/OpenStack%202b5898f7068b4a1fbd512fef7596691c.html"))
+        # self.horizontalLayout7.addWidget(self.secondwindow)
+        # self.radioButton_8 = QtWidgets.QRadioButton(self.widget)
+        # self.radioButton_8.setObjectName("radioButton_8")
+        # self.horizontalLayout7.addWidget(self.radioButton_8)
+        # spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        # self.horizontalLayout7.addItem(spacerItem)
+        # spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        # self.horizontalLayout7.addItem(spacerItem)
+        # self.radioButton_9 = QtWidgets.QRadioButton(self.widget)
+        # self.radioButton_9.setObjectName("radioButton_9")
+        # self.horizontalLayout7.addWidget(self.radioButton_9)
+        # self.verticalLayout.addWidget(self.secondwindow)
+        # self.verticalLayout.addWidget(self.secondwindow)
 
         self.bg1 = QtWidgets.QButtonGroup()
         self.bg1.addButton(self.radioButton, 1)
@@ -236,7 +263,6 @@ class Ui_MainWindow(object):
         self.bg1.buttonClicked.connect(MainWindow.platform_Connection_Clicked)
         self.bg2.buttonClicked.connect(MainWindow.platform_Connection_Clicked)
         self.bg3.buttonClicked.connect(MainWindow.platform_Connection_Clicked)
-
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
