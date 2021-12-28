@@ -91,19 +91,19 @@ class Ui_MainWindow(object):
 
         # add
         self.widget = QtWidgets.QWidget(self.centralwidget)
-        self.widget.setGeometry(QtCore.QRect(280, 450, 208, 160))
+        self.widget.setGeometry(QtCore.QRect(280, 450, 208, 210))
         # self.widget.setGeometry(QtCore.QRect(280, 450, 208, 64))
         self.widget.setObjectName("widget")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.widget)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout.setObjectName("verticalLayout")
 
-        # empty line
-        self.emptyhorizontalLayout1 = QtWidgets.QHBoxLayout()
-        self.emptyhorizontalLayout1.setObjectName("horizontalLayout5")
-        emptyline1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.emptyhorizontalLayout1.addItem(emptyline1)
-        self.verticalLayout.addLayout(self.emptyhorizontalLayout1)
+        # # empty line
+        # self.emptyhorizontalLayout1 = QtWidgets.QHBoxLayout()
+        # self.emptyhorizontalLayout1.setObjectName("horizontalLayout5")
+        # emptyline1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        # self.emptyhorizontalLayout1.addItem(emptyline1)
+        # self.verticalLayout.addLayout(self.emptyhorizontalLayout1)
 
         # Platform:
         self.horizontalLayout1 = QtWidgets.QHBoxLayout()
@@ -135,12 +135,12 @@ class Ui_MainWindow(object):
         self.horizontalLayout2.addWidget(self.radioButton_3)
         self.verticalLayout.addLayout(self.horizontalLayout2)
 
-        # empty line
-        self.emptyhorizontalLayout2 = QtWidgets.QHBoxLayout()
-        self.emptyhorizontalLayout2.setObjectName("horizontalLayout5")
-        emptyline2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.emptyhorizontalLayout2.addItem(emptyline2)
-        self.verticalLayout.addLayout(self.emptyhorizontalLayout2)
+        # # empty line
+        # self.emptyhorizontalLayout2 = QtWidgets.QHBoxLayout()
+        # self.emptyhorizontalLayout2.setObjectName("horizontalLayout5")
+        # emptyline2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        # self.emptyhorizontalLayout2.addItem(emptyline2)
+        # self.verticalLayout.addLayout(self.emptyhorizontalLayout2)
 
         # VM Connection
         self.horizontalLayout3 = QtWidgets.QHBoxLayout()
@@ -172,12 +172,12 @@ class Ui_MainWindow(object):
         # self.horizontalLayout4.addWidget(self.radioButton_6)
         self.verticalLayout.addLayout(self.horizontalLayout4)
 
-        # empty line
-        self.emptyhorizontalLayout3 = QtWidgets.QHBoxLayout()
-        self.emptyhorizontalLayout3.setObjectName("horizontalLayout5")
-        emptyline3 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.emptyhorizontalLayout3.addItem(emptyline3)
-        self.verticalLayout.addLayout(self.emptyhorizontalLayout3)
+        # # empty line
+        # self.emptyhorizontalLayout3 = QtWidgets.QHBoxLayout()
+        # self.emptyhorizontalLayout3.setObjectName("horizontalLayout5")
+        # emptyline3 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        # self.emptyhorizontalLayout3.addItem(emptyline3)
+        # self.verticalLayout.addLayout(self.emptyhorizontalLayout3)
 
         # Node Connection
         self.horizontalLayout5 = QtWidgets.QHBoxLayout()
@@ -244,7 +244,7 @@ class Ui_MainWindow(object):
         self.label.setText(_translate("MainWindow", "SSH Tunnel & Rdesktop Tool"))
         self.label_2.setText(_translate("MainWindow", "User"))
         self.label_3.setText(_translate("MainWindow", "XML File"))
-        self.label_platform.setText(_translate("MainWindow", "-------------Platform-------------"))
+        self.label_platform.setText(_translate("MainWindow", "----------Local Platform-------------"))
         self.label_VM_Connection.setText(_translate("MainWindow", "---------VM Connection---------"))
         self.label_Node_Connection.setText(_translate("MainWindow", "--------Node Connection--------"))
         self.pushButton.setText(_translate("MainWindow", "XML"))

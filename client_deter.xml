@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Client platform="deter">
+  <VM>
+    <Machine name="malware" platform= "deter" uuid="{1d201bff-d69d-46d6-bd60-4d768bd244a7}" OSType="Ubuntu1910" Node="n1" ExperimentName="malware" TeamName="TechDemo">
+      <RemoteDisplay enabled="true">
+        <VRDEProperties>
+          <Property name="TCP/Address" value="0.0.0.0"/>
+          <Property name="TCP/Ports" value="12345"/>
+        </VRDEProperties>
+      </RemoteDisplay>
+      <Network>
+        <Adapter slot="0" enabled="true" MACAddress="0800275F82B1">
+  <!--        Port Forwarding is default to NAT-->
+          <NAT enabled="true">
+            <ForwardingNum>1</ForwardingNum>
+            <Forwarding name="ssh" proto="1" hostip="0.0.0.0" hostport="2201" guestport="22"/>
+          </NAT>
+        </Adapter>
+      </Network>
+    </Machine>
+    <Machine name="ubuntu1" platform= "deter" uuid="{1d201bff-d69d-46d6-bd60-4d768bd24666}" OSType="Ubuntu1910" Node="n2" ExperimentName="malware" TeamName="TechDemo">
+      <RemoteDisplay enabled="true">
+        <VRDEProperties>
+          <Property name="TCP/Address" value="0.0.0.0"/>
+          <Property name="TCP/Ports" value="12346"/>
+        </VRDEProperties>
+      </RemoteDisplay>
+      <Network>
+        <Adapter slot="0" enabled="true" MACAddress="0800275F82B1">
+          <!--        Port Forwarding is default to NAT-->
+          <NAT enabled="false">
+  <!--          <ForwardingNum>1</ForwardingNum>-->
+  <!--          <Forwarding name="ssh" proto="1" hostip="0.0.0.0" hostport="2202" guestport="22"/>-->
+          </NAT>
+        </Adapter>
+      </Network>
+    </Machine>
+    <Machine name="ubuntu2" platform= "deter" uuid="{1d201bff-d69d-46d6-bd60-4d768bd24666}" OSType="Ubuntu1910" Node="n2" ExperimentName="malware" TeamName="TechDemo">
+      <RemoteDisplay enabled="true">
+        <VRDEProperties>
+          <Property name="TCP/Address" value="0.0.0.0"/>
+          <Property name="TCP/Ports" value="12346"/>
+        </VRDEProperties>
+      </RemoteDisplay>
+      <Network>
+        <Adapter slot="0" enabled="true" MACAddress="0800275F82B1">
+          <!--        Port Forwarding is default to NAT-->
+          <NAT enabled="true">
+            <ForwardingNum>1</ForwardingNum>
+            <Forwarding name="ssh" proto="1" hostip="0.0.0.0" hostport="2202" guestport="22"/>
+          </NAT>
+        </Adapter>
+      </Network>
+    </Machine>
+    <Machine name="ubuntu3" platform= "deter" uuid="{1d201bff-d69d-46d6-bd60-4d768bd24666}" OSType="Ubuntu1910" Node="n3" ExperimentName="malware" TeamName="TechDemo">
+      <RemoteDisplay enabled="true">
+        <VRDEProperties>
+          <Property name="TCP/Address" value="0.0.0.0"/>
+          <Property name="TCP/Ports" value="12346"/>
+        </VRDEProperties>
+      </RemoteDisplay>
+      <Network>
+        <Adapter slot="0" enabled="true" MACAddress="0800275F82B1">
+          <!--        Port Forwarding is default to NAT-->
+          <NAT enabled="false">
+  <!--          <ForwardingNum>1</ForwardingNum>-->
+  <!--          <Forwarding name="ssh" proto="1" hostip="0.0.0.0" hostport="2202" guestport="22"/>-->
+          </NAT>
+        </Adapter>
+      </Network>
+    </Machine>
+    <Machine name="ubuntu4" platform= "deter" uuid="{1d201bff-d69d-46d6-bd60-4d768bd24888}" OSType="Ubuntu1910" Node="n3" ExperimentName="malware" TeamName="TechDemo">
+      <RemoteDisplay enabled="true">
+        <VRDEProperties>
+          <Property name="TCP/Address" value="0.0.0.0"/>
+          <Property name="TCP/Ports" value="12347"/>
+        </VRDEProperties>
+      </RemoteDisplay>
+      <Network>
+        <Adapter slot="0" enabled="true" MACAddress="0800275F82B1">
+          <!--        Port Forwarding is default to NAT-->
+          <NAT enabled="true">
+            <ForwardingNum>4</ForwardingNum>
+            <Forwarding name="ssh" proto="1" hostip="0.0.0.0" hostport="2204" guestport="22"/>
+            <Forwarding name="web" proto="1" hostip="0.0.0.0" hostport="8080" guestport="80"/>
+            <Forwarding name="web1" proto="1" hostip="0.0.0.0" hostport="8081" guestport="81"/>
+            <Forwarding name="web2" proto="1" hostip="0.0.0.0" hostport="8082" guestport="82"/>
+          </NAT>
+        </Adapter>
+      </Network>
+    </Machine>
+    <Machine name="ubuntu5" platform= "deter" uuid="{1d201bff-d69d-46d6-bd60-4d768bd24888}" OSType="Ubuntu1910" Node="n3" ExperimentName="malware" TeamName="TechDemo">
+      <RemoteDisplay enabled="true">
+        <VRDEProperties>
+          <Property name="TCP/Address" value="0.0.0.0"/>
+          <Property name="TCP/Ports" value="12347"/>
+        </VRDEProperties>
+      </RemoteDisplay>
+      <Network>
+        <Adapter slot="0" enabled="true" MACAddress="0800275F82B1">
+          <!--        Port Forwarding is default to NAT-->
+          <NAT enabled="true">
+            <ForwardingNum>3</ForwardingNum>
+            <Forwarding name="ssh" proto="1" hostip="0.0.0.0" hostport="2205" guestport="22"/>
+            <Forwarding name="web" proto="1" hostip="0.0.0.0" hostport="8080" guestport="80"/>
+            <Forwarding name="web4" proto="1" hostip="0.0.0.0" hostport="8084" guestport="84"/>
+          </NAT>
+        </Adapter>
+      </Network>
+    </Machine>
+  </VM>
+  <NODES>
+    <Node name="n1" platform= "deter" OSType="Ubuntu1604-64-STD" ExperimentName="malware" TeamName="TechDemo">
+      <VNC enabled="true">
+        <VNCPort>5901</VNCPort>
+      </VNC>
+    </Node>
+    <Node name="n2" platform= "deter" OSType="Ubuntu1604-64-STD" ExperimentName="malware" TeamName="TechDemo">
+      <VNC enabled="true">
+        <VNCPort>5901</VNCPort>
+      </VNC>
+    </Node>
+    <Node name="n3" platform= "deter" OSType="Ubuntu1604-64-STD" ExperimentName="malware" TeamName="TechDemo">
+      <VNC enabled="false">
+<!--        <VNCPort>5901</VNCPort>-->
+      </VNC>
+    </Node>
+  </NODES>
+</Client>
+
