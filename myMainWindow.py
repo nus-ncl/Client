@@ -31,6 +31,7 @@ class TunnelThread(threading.Thread):
                                f"{home}/.ssh/id_rsa")
         print("port forwarding started!")
 
+
 class OpenStackTunnelThread(threading.Thread):
     def __init__(self, local_port, remote_host, remote_port, username):
         threading.Thread.__init__(self)
@@ -45,6 +46,7 @@ class OpenStackTunnelThread(threading.Thread):
                                "gateway.ncl.sg", 22, self.username,
                                f"{home}/.ssh/id_rsa")
         print("port forwarding started!")
+
 
 class CheckPortThread(threading.Thread):
     def __init__(self, local_port):
@@ -415,12 +417,32 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                                 check_port_thread = CheckPortThread(local_port)
                                 check_port_thread.start()
                                 check_port_thread.join()
-                                ssh_cmd = "ssh -p " + str(
-                                    local_port)  + " log4shell@localhost"
-                                print(ssh_cmd)
-                                subprocess.run(ssh_cmd.split())
-                                break
+                                # web ssh
+                                node_user = 'log4shell'
+                                node_password = 'log4shell'
+                                node_password_bytes = node_password.encode('utf-8')
+                                node_password_base64_bytes = base64.b64encode(node_password_bytes)
+                                node_password_base64 = node_password_base64_bytes.decode('utf')
+                                wssh_port = 8001
+                                while Port.is_port_used(local_addr, wssh_port):
+                                    wssh_port += 1
+                                wssh_thread = WSSH_Thread(wssh_port)
+                                wssh_thread.start()
+                                check_port_thread = CheckPortThread(wssh_port)
+                                check_port_thread.start()
+                                check_port_thread.join()
+                                print("http://localhost:" + str(wssh_port) + "/?hostname=localhost&port=" + str(
+                                    local_port) + "&username=" + node_user + "&password=" + node_password_base64)
+                                webbrowser.open(
+                                    "http://localhost:" + str(wssh_port) + "/?hostname=localhost&port=" + str(
+                                        local_port) + "&username=" + node_user + "&password=" + node_password_base64)
 
+                                # cmd ssh
+                                # ssh_cmd = "ssh -p " + str(
+                                #     local_port)  + " log4shell@localhost"
+                                # print(ssh_cmd)
+                                # subprocess.run(ssh_cmd.split())
+                                break
 
     def Populate(self, Node_QTreeWidgetItem):
         HeaderLabels = {'deter': ["Machine Name", "Experiment Name", "Team Name"],
