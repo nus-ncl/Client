@@ -34,4 +34,8 @@ def getTextNodeValue(document, tagName):
 
 	return output
 
+def getRootElementAttributeValue(document, attributeName):
+	rootElement = document.documentElement
+	attributeValue = rootElement.getAttribute(attributeName)
 
+	return attributeValue

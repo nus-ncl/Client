@@ -244,7 +244,7 @@ class Ui_MainWindow(object):
         self.label.setText(_translate("MainWindow", "SSH Tunnel & Rdesktop Tool"))
         self.label_2.setText(_translate("MainWindow", "User"))
         self.label_3.setText(_translate("MainWindow", "XML File"))
-        self.label_platform.setText(_translate("MainWindow", "-------------Platform-------------"))
+        self.label_platform.setText(_translate("MainWindow", "----------Local Platform-------------"))
         self.label_VM_Connection.setText(_translate("MainWindow", "---------VM Connection---------"))
         self.label_Node_Connection.setText(_translate("MainWindow", "--------Node Connection--------"))
         self.pushButton.setText(_translate("MainWindow", "XML"))

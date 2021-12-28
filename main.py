@@ -1,4 +1,5 @@
 import sys
+sys.path.append('/opt/homebrew/opt/pyside@2/lib/python3.9/site-packages')
 from PySide2 import QtWidgets
 import myMainWindow
 
