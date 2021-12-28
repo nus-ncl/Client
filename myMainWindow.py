@@ -405,14 +405,16 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                         print("Please select your local running platform")
                     else:
                         InstanceNameList = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'name')
+                        usernameList = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'username')
+                        passwordList = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'password')
                         VNCEnableList = ProcessTag.getTagAttributeValue(self.document, 'VNC', 'enabled')
                         VNCPortList = ProcessTag.getTextNodeValue(self.document, 'VNCPort')
                         ProviderIPList = ProcessTag.getTagAttributeValueWithCondition(self.document, 'Adapter', 'IP',
                                                                                       'name', 'Provider')
-                        # print(InstanceNameList)
-                        # print(VNCEnableList)
-                        # print(VNCPortList)
-                        # print(ProviderIPList)
+                        print(InstanceNameList)
+                        print(usernameList)
+                        print(passwordList)
+                        print(ProviderIPList)
                         exp_name_list = ProcessTag.getTagAttributeValue(self.document, 'Node', 'ExperimentName')
                         team_name_list = ProcessTag.getTagAttributeValue(self.document, 'Node', 'TeamName')
                         for index, value in enumerate(InstanceNameList):
@@ -424,8 +426,12 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                                 check_port_thread.start()
                                 check_port_thread.join()
                                 # web ssh
-                                node_user = 'log4shell'
-                                node_password = 'log4shell'
+                                # node_user = 'log4shell'
+                                # node_password = 'log4shell'
+                                node_user = usernameList[index]
+                                node_password = passwordList[index]
+                                print(node_user)
+                                print(node_password)
                                 node_password_bytes = node_password.encode('utf-8')
                                 node_password_base64_bytes = base64.b64encode(node_password_bytes)
                                 node_password_base64 = node_password_base64_bytes.decode('utf')
