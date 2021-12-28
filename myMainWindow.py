@@ -78,6 +78,7 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.platform = None
         self.target_platform = None
         self.url = None
+        self.connection = None
         self.vm_connection_method = None
         self.node_connection_method = None
         self.Populate(self.Node_QTreeWidgetItem)
@@ -135,21 +136,27 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             else:
                 self.platform = None
         elif sender == self.ui.bg2:
-
             if self.ui.bg2.checkedId() == 4:
-                self.vm_connection_method = 'Console'
+                self.connection = 'Console'
             elif self.ui.bg2.checkedId() == 5:
-                self.vm_connection_method = 'SSH'
+                self.connection = 'SSH'
             else:
-                self.vm_connection_method = None
-        else:
-            # bg3
-            if self.ui.bg3.checkedId() == 6:
-                self.node_connection_method = 'VNC'
-            elif self.ui.bg3.checkedId() == 7:
-                self.node_connection_method = 'SSH'
-            else:
-                self.node_connection_method = None
+                self.connection = None
+        # elif sender == self.ui.bg2:
+        #     if self.ui.bg2.checkedId() == 4:
+        #         self.vm_connection_method = 'Console'
+        #     elif self.ui.bg2.checkedId() == 5:
+        #         self.vm_connection_method = 'SSH'
+        #     else:
+        #         self.vm_connection_method = None
+        # else:
+        #     # bg3
+        #     if self.ui.bg3.checkedId() == 6:
+        #         self.node_connection_method = 'VNC'
+        #     elif self.ui.bg3.checkedId() == 7:
+        #         self.node_connection_method = 'SSH'
+        #     else:
+        #         self.node_connection_method = None
 
     def click(self):
         print("Plz double click!")
@@ -170,8 +177,8 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 exp_name = item.text(1)
                 team_name = item.text(2)
                 if (self.platform == 'Linux' or self.platform == 'MacOS'):
-                    if (self.vm_connection_method == 'Console'):
-                        # VRDE Console
+                    if (self.connection == 'Console'):
+                        # VM VRDE Console
                         remoteDisplayEnabled = ProcessTag.getTagAttributeValue(self.document, 'RemoteDisplay',
                                                                                'enabled')
                         remoteDisplayPort = ProcessTag.getTagAttributeValueWithCondition(self.document, 'Property',
@@ -203,8 +210,8 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                             print(rdesktop_cmd)
                             subprocess.run(rdesktop_cmd.split())
 
-                    if (self.vm_connection_method == 'SSH'):
-                        # SSH
+                    if (self.connection == 'SSH'):
+                        # VM SSH
                         hostport = None
                         guestport = None
                         NATNode = ProcessTag.getTagAttributeValue(self.document, 'NAT', 'enabled')
@@ -258,7 +265,7 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             # node doubleclick
             else:
                 node_name = item.text(0)
-                if (self.node_connection_method == 'VNC'):
+                if (self.connection == 'VNC'):
                     # node VNC
                     if self.platform is None:
                         print("Please select your running platform")
@@ -312,9 +319,8 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                                     print(vnc_cmd)
                                     subprocess.run(vnc_cmd.split())
                                     break
-                elif (self.node_connection_method == 'SSH'):
+                elif (self.connection == 'SSH'):
                     # node SSH
-                    # SSH
                     node_user = 'localuser'
                     node_password = 'localuser'
                     node_password_bytes = node_password.encode('utf-8')
@@ -355,7 +361,7 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             project_name = item.text(1)
             domain_name = item.text(2)
             if (self.platform == 'Linux' or self.platform == 'MacOS'):
-                if (self.node_connection_method == 'VNC'):
+                if (self.connection == 'Console'):
                     # VNC
                     if self.platform is None:
                         print("Please select your local running platform")
@@ -393,8 +399,8 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                                     print(vnc_cmd)
                                     subprocess.run(vnc_cmd.split())
                                     break
-                if (self.node_connection_method == 'SSH'):
-                    # VNC
+                if (self.connection == 'SSH'):
+                    # SSH
                     if self.platform is None:
                         print("Please select your local running platform")
                     else:
