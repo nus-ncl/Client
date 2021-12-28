@@ -9,10 +9,10 @@ import threading
 import time
 import webbrowser
 from pathlib import Path
-from PySide2 import QtWidgets
-from PySide2.QtWidgets import QFileDialog
+from PySide6 import QtWidgets
+from PySide6.QtWidgets import QFileDialog
 from ScrollUI import Ui_MainWindow
-
+from PySide6.QtCore import QUrl
 
 class TunnelThread(threading.Thread):
     def __init__(self, local_port, node, exp, team, ssh_port, username):
@@ -70,16 +70,19 @@ class WSSH_Thread(threading.Thread):
 
 
 class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
-    def __init__(self):
+    def __init__(self, browser):
         super(myMainWindow, self).__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.Node_QTreeWidgetItem = []
         self.platform = None
         self.target_platform = None
+        self.url = None
+        self.connection = None
         self.vm_connection_method = None
         self.node_connection_method = None
         self.Populate(self.Node_QTreeWidgetItem)
+        self.browser = browser
 
     def updateQTreeWidgetItem(self):
         if self.target_platform == 'deter':
@@ -133,21 +136,28 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             else:
                 self.platform = None
         elif sender == self.ui.bg2:
-
             if self.ui.bg2.checkedId() == 4:
-                self.vm_connection_method = 'Console'
+                self.connection = 'Console'
             elif self.ui.bg2.checkedId() == 5:
-                self.vm_connection_method = 'SSH'
+                self.connection = 'SSH'
             else:
-                self.vm_connection_method = None
-        else:
-            # bg3
-            if self.ui.bg3.checkedId() == 6:
-                self.node_connection_method = 'VNC'
-            elif self.ui.bg3.checkedId() == 7:
-                self.node_connection_method = 'SSH'
-            else:
-                self.node_connection_method = None
+                self.connection = None
+        # elif sender == self.ui.bg2:
+        #     if self.ui.bg2.checkedId() == 4:
+        #         self.vm_connection_method = 'Console'
+        #     elif self.ui.bg2.checkedId() == 5:
+        #         self.vm_connection_method = 'SSH'
+        #     else:
+        #         self.vm_connection_method = None
+        # else:
+        #     # bg3
+        #     if self.ui.bg3.checkedId() == 6:
+        #         self.node_connection_method = 'VNC'
+        #     elif self.ui.bg3.checkedId() == 7:
+        #         self.node_connection_method = 'SSH'
+        #     else:
+        #         self.node_connection_method = None
+
 
     def click(self):
         print("Plz double click!")
@@ -168,8 +178,8 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 exp_name = item.text(1)
                 team_name = item.text(2)
                 if (self.platform == 'Linux' or self.platform == 'MacOS'):
-                    if (self.vm_connection_method == 'Console'):
-                        # VRDE Console
+                    if (self.connection == 'Console'):
+                        # VM VRDE Console
                         remoteDisplayEnabled = ProcessTag.getTagAttributeValue(self.document, 'RemoteDisplay',
                                                                                'enabled')
                         remoteDisplayPort = ProcessTag.getTagAttributeValueWithCondition(self.document, 'Property',
@@ -201,8 +211,8 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                             print(rdesktop_cmd)
                             subprocess.run(rdesktop_cmd.split())
 
-                    if (self.vm_connection_method == 'SSH'):
-                        # SSH
+                    if (self.connection == 'SSH'):
+                        # VM SSH
                         hostport = None
                         guestport = None
                         NATNode = ProcessTag.getTagAttributeValue(self.document, 'NAT', 'enabled')
@@ -256,7 +266,7 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             # node doubleclick
             else:
                 node_name = item.text(0)
-                if (self.node_connection_method == 'VNC'):
+                if (self.connection == 'VNC'):
                     # node VNC
                     if self.platform is None:
                         print("Please select your running platform")
@@ -310,9 +320,8 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                                     print(vnc_cmd)
                                     subprocess.run(vnc_cmd.split())
                                     break
-                elif (self.node_connection_method == 'SSH'):
+                elif (self.connection == 'SSH'):
                     # node SSH
-                    # SSH
                     node_user = 'localuser'
                     node_password = 'localuser'
                     node_password_bytes = node_password.encode('utf-8')
@@ -353,7 +362,7 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             project_name = item.text(1)
             domain_name = item.text(2)
             if (self.platform == 'Linux' or self.platform == 'MacOS'):
-                if (self.node_connection_method == 'VNC'):
+                if (self.connection == 'Console'):
                     # VNC
                     if self.platform is None:
                         print("Please select your local running platform")
@@ -391,8 +400,8 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                                     print(vnc_cmd)
                                     subprocess.run(vnc_cmd.split())
                                     break
-                if (self.node_connection_method == 'SSH'):
-                    # VNC
+                if (self.connection == 'SSH'):
+                    # SSH
                     if self.platform is None:
                         print("Please select your local running platform")
                     else:
@@ -415,10 +424,31 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                                 check_port_thread = CheckPortThread(local_port)
                                 check_port_thread.start()
                                 check_port_thread.join()
-                                ssh_cmd = "ssh -p " + str(
-                                    local_port)  + " log4shell@localhost"
-                                print(ssh_cmd)
-                                subprocess.run(ssh_cmd.split())
+                                # web ssh
+                                node_user = 'log4shell'
+                                node_password = 'log4shell'
+                                node_password_bytes = node_password.encode('utf-8')
+                                node_password_base64_bytes = base64.b64encode(node_password_bytes)
+                                node_password_base64 = node_password_base64_bytes.decode('utf')
+                                wssh_port = 8001
+                                while Port.is_port_used(local_addr, wssh_port):
+                                    wssh_port += 1
+                                wssh_thread = WSSH_Thread(wssh_port)
+                                wssh_thread.start()
+                                check_port_thread = CheckPortThread(wssh_port)
+                                check_port_thread.start()
+                                check_port_thread.join()
+                                print("http://localhost:" + str(wssh_port) + "/?hostname=localhost&port=" + str(
+                                    local_port) + "&username=" + node_user + "&password=" + node_password_base64)
+                                webbrowser.open(
+                                    "http://localhost:" + str(wssh_port) + "/?hostname=localhost&port=" + str(
+                                        local_port) + "&username=" + node_user + "&password=" + node_password_base64)
+
+                                # cmd ssh
+                                # ssh_cmd = "ssh -p " + str(
+                                #     local_port)  + " log4shell@localhost"
+                                # print(ssh_cmd)
+                                # subprocess.run(ssh_cmd.split())
                                 break
 
 
@@ -441,4 +471,8 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         print(path)
         self.document = IOXML.parseXML(str(path[0]))
         self.target_platform = ProcessTag.getRootElementAttributeValue(self.document, 'platform')
+        self.url = ProcessTag.getRootElementAttributeValue(self.document, 'url')
         self.updateQTreeWidgetItem()
+        self.browser.load(QUrl(self.url))
+        self.browser.show()
+

@@ -93,7 +93,9 @@ sudo apt-get install qt5-default libxcb-xinerama0
 
 * python environment
 ```sh
-sudo apt-get install python3 python3-pip
+sudo add-apt-repository ppa:deadsnakes/ppa 
+sudo apt update 
+sudo apt install python3.9 python3.9-pip
 pip3 install virtualenv 
 ```
 

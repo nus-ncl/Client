@@ -1,5 +1,5 @@
-from PySide2.QtXml import (QDomDocument)
-from PySide2.QtCore import QFile, QFileInfo, QIODevice, QTextStream
+from PySide6.QtXml import (QDomDocument)
+from PySide6.QtCore import QFile, QFileInfo, QIODevice, QTextStream
 from xml.dom import minidom
 
 
