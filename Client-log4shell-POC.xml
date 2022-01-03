@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Client platform="openstack" url="https://htmlpreview.github.io/?https://github.com/hkwany/VIndex/blob/master/VIndex/Vindex%20cbaee41244644c55b51e40a52a480273/log4shellpoc/log4shell%20poc%20instructions%20%26%20walkthrough%2023a26724347349ebb79a0e428037b6dd.html">
+  <VM>
+    <Machine username="log4shell" password="log4shell" name="log4jshell" uuid="{1d201bff-d69d-46d6-bd60-4d768bd244a7}" OSType="Ubuntu2004" Project="ARPDemo" Domain="default">
+      <VNC enabled="true">
+        <VNCPort>5901</VNCPort>
+      </VNC>
+      <Network>
+        <Adapter name="Provider" enabled="true" IP="10.10.0.219" MACAddress="0800275F82B1"/>
+      </Network>
+    </Machine>
+    <Machine username="vagrant" password="vagrant" name="test1" uuid="{1d201bff-d69d-46d6-bd60-4d768bd244a7}" OSType="Ubuntu2004" Project="ARPDemo" Domain="default">
+      <VNC enabled="false">
+        <VNCPort>null</VNCPort>
+      </VNC>
+      <Network>
+        <Adapter name="Provider" enabled="true" IP="10.10.0.220" MACAddress="0800275F82B1"/>
+      </Network>
+    </Machine>
+    <Machine username="admin" password="test" name="test2" uuid="{1d201bff-d69d-46d6-bd60-4d768bd244a7}" OSType="Ubuntu2004" Project="ARPDemo" Domain="default">
+      <VNC enabled="true">
+        <VNCPort>5901</VNCPort>
+      </VNC>
+      <Network>
+        <Adapter name="Provider" enabled="true" IP="10.10.0.221" MACAddress="0800275F82B1"/>
+      </Network>
+    </Machine>
+    <Machine username="test" password="admin" name="test3" uuid="{1d201bff-d69d-46d6-bd60-4d768bd244a7}" OSType="Ubuntu2004" Project="HealthCare" Domain="default">
+      <VNC enabled="true">
+        <VNCPort>5901</VNCPort>
+      </VNC>
+      <Network>
+        <Adapter name="Provider" enabled="true" IP="10.10.1.219" MACAddress="0800275F82B1"/>
+      </Network>
+    </Machine>
+  </VM>
+<!--  <NODES>-->
+<!--    <Node name="n1" platform= "openstack" OSType="Ubuntu1604-64-STD" ExperimentName="malware" TeamName="TechDemo">-->
+<!--      <VNC enabled="true">-->
+<!--        <VNCPort>5901</VNCPort>-->
+<!--      </VNC>-->
+<!--    </Node>-->
+<!--    <Node name="n2" platform= "openstack" OSType="Ubuntu1604-64-STD" ExperimentName="malware" TeamName="TechDemo">-->
+<!--      <VNC enabled="true">-->
+<!--        <VNCPort>5901</VNCPort>-->
+<!--      </VNC>-->
+<!--    </Node>-->
+<!--    <Node name="n3" platform= "openstack" OSType="Ubuntu1604-64-STD" ExperimentName="malware" TeamName="TechDemo">-->
+<!--      <VNC enabled="false">-->
+<!--&lt;!&ndash;        <VNCPort>5901</VNCPort>&ndash;&gt;-->
+<!--      </VNC>-->
+<!--    </Node>-->
+<!--  </NODES>-->
+</Client>
+
