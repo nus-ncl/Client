@@ -14,7 +14,11 @@ from PySide6.QtWidgets import QFileDialog
 from ScrollUI import Ui_MainWindow
 from PySide6.QtCore import QUrl
 
-class TunnelThread(threading.Thread):
+CLIENT_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PRIVATE_KEY_PATH = f"{CLIENT_PATH}/private_key/nologin_rsa_key.pem"
+
+
+class DeterTunnelThread(threading.Thread):
     def __init__(self, local_port, node, exp, team, ssh_port, username):
         threading.Thread.__init__(self)
         self.local_port = local_port
@@ -28,7 +32,7 @@ class TunnelThread(threading.Thread):
         home = str(Path.home())
         My_SSH.port_forwarding(self.local_port, f"{self.node}.{self.exp}.{self.team}.ncl.sg", int(self.ssh_port),
                                "users.ncl.sg", 22, self.username,
-                               f"{home}/.ssh/id_rsa")
+                               PRIVATE_KEY_PATH)
         print("port forwarding started!")
 
 class OpenStackTunnelThread(threading.Thread):
@@ -43,19 +47,26 @@ class OpenStackTunnelThread(threading.Thread):
         home = str(Path.home())
         My_SSH.port_forwarding(self.local_port, self.remote_host, int(self.remote_port),
                                "gateway.ncl.sg", 22, self.username,
-                               f"{home}/.ssh/id_rsa")
+                               PRIVATE_KEY_PATH)
         print("port forwarding started!")
 
 class CheckPortThread(threading.Thread):
     def __init__(self, local_port):
         threading.Thread.__init__(self)
         self.local_port = local_port
+        self._running = True
+
+    def terminate(self):
+        self._running = False
 
     def run(self):
-        while not Port.is_port_used('127.0.0.1', self.local_port):
+        while self._running and (not Port.is_port_used('127.0.0.1', self.local_port)):
             print("SSH tunnel has not been set up, please wait.")
             time.sleep(1)
-        print("SSH tunnel has been set up successfully")
+        if self._running:
+            print("SSH tunnel has been set up successfully")
+        else:
+            print("SSH tunnel has been set up unsuccessfully")
 
 
 class WSSH_Thread(threading.Thread):
@@ -76,6 +87,7 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.ui.setupUi(self)
         self.Node_QTreeWidgetItem = []
         self.platform = None
+        self.CVE = None
         self.target_platform = None
         self.url = None
         self.connection = None
@@ -202,11 +214,12 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                             -N: Do not execute a remote command. This is useful for just forwarding ports
                             -T: Disable pseudo-tty allocation
                             '''
-                            ssh_thread = TunnelThread(local_port, node_name, exp_name, team_name, rdp_port, username)
+                            ssh_thread = DeterTunnelThread(local_port, node_name, exp_name, team_name, rdp_port, username)
                             ssh_thread.start()
                             check_port_thread = CheckPortThread(local_port)
                             check_port_thread.start()
-                            check_port_thread.join()
+                            check_port_thread.join(timeout=5)
+                            check_port_thread.terminate()
                             rdesktop_cmd = "rdesktop -a 16 localhost:" + str(local_port)
                             print(rdesktop_cmd)
                             subprocess.run(rdesktop_cmd.split())
@@ -254,11 +267,12 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                         if not hostport or not guestport:
                             print("This VM's SSH port hasn't been port forwarded!")
                         else:
-                            ssh_thread = TunnelThread(local_port, node_name, exp_name, team_name, hostport, username)
+                            ssh_thread = DeterTunnelThread(local_port, node_name, exp_name, team_name, hostport, username)
                             ssh_thread.start()
                             check_port_thread = CheckPortThread(local_port)
                             check_port_thread.start()
-                            check_port_thread.join()
+                            check_port_thread.join(timeout=5)
+                            check_port_thread.terminate()
                             ssh_cmd = "ssh -p " + str(
                                 local_port) + " -o StrictHostKeyChecking=no" + " vagrant@localhost"
                             print(ssh_cmd)
@@ -285,12 +299,13 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                                     break
                                 else:
                                     vnc_port = VNCPortList[index]
-                                    ssh_thread = TunnelThread(local_port, node_name, exp_name, team_name, vnc_port,
-                                                              username)
+                                    ssh_thread = DeterTunnelThread(local_port, node_name, exp_name, team_name, vnc_port,
+                                                                   username)
                                     ssh_thread.start()
                                     check_port_thread = CheckPortThread(local_port)
                                     check_port_thread.start()
-                                    check_port_thread.join()
+                                    check_port_thread.join(timeout=5)
+                                    check_port_thread.terminate()
                                     if self.platform == 'MacOS':
                                         # VNCEnableList = ProcessTag.getTagAttributeValue(self.document, 'VNC', 'enabled')
                                         # VNCPortList = ProcessTag.getTextNodeValue(self.document, 'VNCPort')
@@ -338,11 +353,12 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                             team_name = team_name_list[index]
                             break
 
-                    ssh_thread = TunnelThread(local_port, node_name, exp_name, team_name, guestport, username)
+                    ssh_thread = DeterTunnelThread(local_port, node_name, exp_name, team_name, guestport, username)
                     ssh_thread.start()
                     check_port_thread = CheckPortThread(local_port)
                     check_port_thread.start()
-                    check_port_thread.join()
+                    check_port_thread.join(timeout=5)
+                    check_port_thread.terminate()
                     wssh_port = 8001
                     while Port.is_port_used(local_addr, wssh_port):
                         wssh_port += 1
@@ -350,7 +366,8 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     wssh_thread.start()
                     check_port_thread = CheckPortThread(wssh_port)
                     check_port_thread.start()
-                    check_port_thread.join()
+                    check_port_thread.join(timeout=5)
+                    check_port_thread.terminate()
                     print("http://localhost:" + str(wssh_port) + "/?hostname=localhost&port=" + str(
                         local_port) + "&username=" + node_user + "&password=" + node_password_base64)
                     webbrowser.open("http://localhost:" + str(wssh_port) + "/?hostname=localhost&port=" + str(
@@ -376,8 +393,8 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                         # print(VNCEnableList)
                         # print(VNCPortList)
                         # print(ProviderIPList)
-                        exp_name_list = ProcessTag.getTagAttributeValue(self.document, 'Node', 'ExperimentName')
-                        team_name_list = ProcessTag.getTagAttributeValue(self.document, 'Node', 'TeamName')
+                        # exp_name_list = ProcessTag.getTagAttributeValue(self.document, 'Node', 'ExperimentName')
+                        # team_name_list = ProcessTag.getTagAttributeValue(self.document, 'Node', 'TeamName')
                         for index, value in enumerate(InstanceNameList):
                             if value == instance_name:
                                 if VNCEnableList[index] == "false":
@@ -390,7 +407,8 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                                     ssh_thread.start()
                                     check_port_thread = CheckPortThread(local_port)
                                     check_port_thread.start()
-                                    check_port_thread.join()
+                                    check_port_thread.join(timeout=5)
+                                    check_port_thread.terminate()
                                     if self.platform == 'MacOS':
                                         vnc_cmd = "open vnc://127.0.0.1:" + str(local_port)
                                     elif self.platform == 'Linux':
@@ -425,7 +443,8 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                                 ssh_thread.start()
                                 check_port_thread = CheckPortThread(local_port)
                                 check_port_thread.start()
-                                check_port_thread.join()
+                                check_port_thread.join(timeout=5)
+                                check_port_thread.terminate()
                                 # web ssh
                                 # node_user = 'log4shell'
                                 # node_password = 'log4shell'
@@ -441,7 +460,8 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                                 wssh_thread.start()
                                 check_port_thread = CheckPortThread(wssh_port)
                                 check_port_thread.start()
-                                check_port_thread.join()
+                                check_port_thread.join(timeout=5)
+                                check_port_thread.terminate()
                                 print("http://localhost:" + str(wssh_port) + "/?hostname=localhost&port=" + str(
                                     local_port) + "&username=" + node_user + "&password=" + node_password_base64)
                                 webbrowser.open(
@@ -475,8 +495,24 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         print(path)
         self.document = IOXML.parseXML(str(path[0]))
         self.target_platform = ProcessTag.getRootElementAttributeValue(self.document, 'platform')
+        self.CVE = ProcessTag.getRootElementAttributeValue(self.document, 'CVE')
         self.url = ProcessTag.getRootElementAttributeValue(self.document, 'url')
+        # self.updateQTreeWidgetItem()
+        # self.browser.load(QUrl(self.url))
+        # self.browser.show()
+
+    def confirm(self, file_path):
+        print('Confirm Clicked!')
         self.updateQTreeWidgetItem()
+        print(f"Currently: {self.CVE}")
+
+    def tutorial(self, file_path):
+        print('Tutorial Clicked!')
         self.browser.load(QUrl(self.url))
         self.browser.show()
 
+    def resetvnc(self, file_path):
+        print('ResetVNC Clicked!')
+
+    def runscript(self, file_path):
+        print('RunScript Clicked!')
