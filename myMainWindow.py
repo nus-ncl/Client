@@ -542,7 +542,7 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.browser.load(QUrl(self.url))
         self.browser.show()
 
-    def resetvnc(self, file_path):
+    def reset(self, file_path):
         # vncserver -localhost no :1
         # vncserver -kill :1
         # vncserver -list

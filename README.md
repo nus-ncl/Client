@@ -37,10 +37,7 @@
 ## Table of Contents
 
 * [About the Project](#about-the-project)
-  * [Running Platform](#Running-Platform)
 * [Getting Started](#getting-started)
-  * [Prerequisites](#prerequisites)
-  * [Run](#Run)
 * [Usage](#usage)
 * [Issues](#Issues)
 * [Contributing](#contributing)
@@ -58,115 +55,178 @@ Configurating SSH tunnel and rdesktop to the remote machine(on NCL) is a kind of
 It provides a clean GUI to automate the procedure of SSH tunneling, port binding & unbinding and rdesktop to make your life easier :)
 
 
-### Running Platform
-* [Ubuntu](https://ubuntu.com/)
-* MacOS
+
 
 
 
 <!-- GETTING STARTED -->
 ## Getting Started
 
-This is an instruction of how you to install prerequisites and run the Client tool locally successfully.
+### Select Platform
+* [MacOS](#get-started-from-macos)
+* [Windows](#get-started-from-windows)
+* [Ubuntu](#get-started-from-ubuntu)
 
-### Prerequisites
-Users must go through step1 & step2, latter of which depends on your OS.
-#### [Step1 Common]
+### Get started from MacOS
+#### [Step1: git clone/download this repository]
 
+* git:
+  ```sh
+  $ git clone https://github.com/nus-ncl/Client.git
+  ```
+* Download from the url below:
 
-* SSH Key generation and configuration
-```sh
-# Generate rsa key-pair, private & public keys
-ssh-keygen -t rsa
-# Let's say using default location ~/.ssh/id_rsa
-# Copy public key to remote machine ~/.ssh/authorized_key file so that you 
-# can ssh login without inputting password
-ssh-copy-id -i ~/.ssh/id_rsa username@user.ncl.sg
-```
-
-#### [Step2 for ubuntu]
-* qt5
-```sh
-# export QT_DEBUG_PLUGINS=1 to prompt debug info
-sudo apt-get install qt5-default libxcb-xinerama0
-```
-
-* python environment
-```sh
-sudo add-apt-repository ppa:deadsnakes/ppa 
-sudo apt update 
-sudo apt install python3.9 python3.9-pip
-pip3 install virtualenv 
-```
-
-* rdesktop
-```sh
-sudo apt-get install rdesktop
-```
-* (**_optional_**) ssh-askpass
-```sh
-sudo apt-get install ssh-askpass-gnome ssh-askpass
-```
-#### [Step2 for MacOS]
-* Install [Homebrew](https://brew.sh/)
-* Install all prerequisites
-```sh
-brew install python@3.9
-pip3 install virtualenv
- 
-brew install qt5
-brew install rdesktop
+  [Client-master](https://github.com/nus-ncl/Client/archive/refs/heads/master.zip)
 
 
-```
-* (**_optional_**) ssh-askpass
-```sh
-brew install theseal/ssh-askpass/ssh-askpass
-```
+#### [Step2: install python3.9]
+* [python3.9](https://www.python.org/downloads/release/python-399/)
+  ```shell
+  # check in the terminal if python3.9 installed successfully
+  $ python3.9 -V
+  Python 3.9.9
+  ```
 
-### Run
+#### [Step3: create a python virtual environment]
+  ```shell
+  # Enter main folder
+  $ cd Client # or 'cd Client-master'
+  $ python3.9 -m pip install virtualenv 
+  $ python3.9 -m virtualenv venv
+  ```
 
-1. Clone the repo
-```sh
-git clone https://github.com/nus-ncl/Client.git
-```
-2. Create/Enter your virtual python environment
+#### [Step4: enter the python virtual environment & install dependencies]
+  ```shell
+  $ source venv/bin/activate
+  (venv)$ pip install -r requirements.txt
+  ```
+#### [Step5: run it]
+  ```shell
+  (venv)$ python main.py
+  ```
+
+### Get started from Windows
+#### [Step1: git clone/download this repository]
+
+* git:
+  ```sh
+  $ git clone https://github.com/nus-ncl/Client.git
+  ```
+* Download from the url below:
+
+  [Client-master](https://github.com/nus-ncl/Client/archive/refs/heads/master.zip)
+
+
+#### [Step2: install python3.9 & vncviewer]
+* [python3.9](https://www.python.org/downloads/release/python-399/)
+  ```shell
+  # check in the terminal if python3.9 installed successfully
+  $ python3.9 -V
+  Python 3.9.9
+  ```
+* [vncviewer](https://www.realvnc.com/en/connect/download/viewer/windows/)
+
+#### [Step3: configure vncviewer]
+* search installed vncviewer file location
+![search_vncviewer]
+###
+* right-click > properties > copy 'Target'
+![find_target]
+###
+* add an entry to the Environment Variable 'Path'
+![search_env]
+![find_env_path]
+###
+* in my case, 'Target' is 'C:\Program Files\RealVNC\VNC Viewer\vncviewer.exe', so add 'C:\Program Files\RealVNC\VNC Viewer\vncviewer.exe' to Path
+![add_path]
+###
+* now can invoke it by 'vncviewer' in Command Prompt
 ```shell
-cd Client
-# Create
-python3 -m venv ./venv
-#Enter 
-source venv/bin/activate
+$ vncviewer
 ```
-3. Require your client.xml file of your remote machine.
-```sh
-# client.xml file is generated from Conductor #
-# You can ask admin/tutor for it
-# But I have provided a template client.xml in this repo
-```
-4. Install dependencies & Run
-```sh
-(venv) pip install -r requirements.txt
-(venv) python main.py
-```
-5. Quit your virtual python environment
-```shell
-# Quit
-(venv)deactivate
-```
+![check_vncviewer]
+
+#### [Step4: create a python virtual environment]
+  ```shell
+  # Enter main folder
+  $ cd Client # or 'cd Client-master'
+  $ python3.9 -m pip install virtualenv 
+  $ python3.9 -m virtualenv venv
+  ```
+
+#### [Step5: enter the python virtual environment & install dependencies]
+  ```shell
+  $ venv\Scripts\activate
+  (venv)$ pip install -r requirements.txt
+  ```
+#### [Step6: run it]
+  ```shell
+  (venv)$ python main.py
+  ```
+
+### Get started from Ubuntu
+#### [Step1: git clone/download this repository]
+
+* git:
+  ```sh
+  $ git clone https://github.com/nus-ncl/Client.git
+  ```
+* Download from the url below:
+
+  [Client-master](https://github.com/nus-ncl/Client/archive/refs/heads/master.zip)
+
+
+#### [Step2: install python3.9 & vncviewer]
+* [python3.9](https://www.python.org/downloads/release/python-399/)
+  ```shell
+  # check in the terminal if python3.9 installed successfully
+  $ python3.9 -V
+  Python 3.9.9
+  ```
+* [vncviewer](https://www.realvnc.com/en/connect/download/viewer/linux/)
+  
+#### [Step3: create a python virtual environment]
+  ```shell
+  # Enter main folder
+  $ cd Client # or 'cd Client-master'
+  $ python3.9 -m pip install virtualenv 
+  $ python3.9 -m virtualenv venv
+  ```
+
+#### [Step4: enter the python virtual environment & install dependencies]
+  ```shell
+  $ source venv/bin/activate
+  (venv)$ pip install -r requirements.txt
+  ```
+#### [Step5: run it]
+  ```shell
+  (venv)$ python main.py
+  ```
 
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)  
+![mainwindow]
 
-1. Input your NCL username into ``user`` blank.
-2. Select your client.xml file by clicking the ``xml`` button.
-3. Double-click the entry listed in the UI, go back to the command line and then input your NCL password.
-4. The Rdesktop GUI window has come out!!!
-5. For quitting, just close the Rdesktop GUI window and the port will be unbinded automatically.(_We also print binded port in command line, so you can unbind the process binded to that port by using 'kill' manually in case_)
+1. Input your NCL Testbed Username into ``Username`` blank.
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+   *caution*
+      - If you use Username `nologin` that we provide, no more further operations 
+      - If you use your own NCL Testbed Username(e.g. `joedoe`)
+        - put your private key to the `private_key` folder and name it as `<Username>.pem`(e.g. `joedoe.pem`)
+        - change the file mode of the private key to `400` by `chmod 400 <Username>.pem`
+   
+2. Click the ``Choose XML ...`` button and choose your client xml file.
+3. Click 'Confirm' button to show remote machines
+4. Select your local platform
+5. Select your method to access to the machine
+   - 'Console': access with GUI
+   - 'SSH' access without GUI via web browser
+6. Double-click the machine entry to access it
+7. Click 'Tutorial' button to show a window of the relavant documentation
+8. Click 'Reset' button if 'Console' accessing method ALWAYS failed
+9. 'Nothing' Button is a future function button, to be continued...
+
 
 
 
@@ -228,5 +288,11 @@ Project Link: [https://github.com/nus-ncl/Client](https://github.com/nus-ncl/Cli
 [license-url]: https://github.com/nus-ncl/Client/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/
-[product-screenshot]: images/client-screenshot.png
+[mainwindow]: images/mainwindow.png
+[add_path]: images/add_path.jpg
+[check_vncviewer]: images/check_vncviewer.jpg
+[find_env_path]: images/find_env_path.jpg
+[find_target]: images/find_target.jpg
+[search_env]: images/search_env.jpg
+[search_vncviewer]: images/search_vncviewer.jpg
 
