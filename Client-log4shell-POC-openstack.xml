@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Client platform="openstack" CVE="log4shell" url="https://htmlpreview.github.io/?https://github.com/hkwany/VIndex/blob/master/VIndex/Vindex%20cbaee41244644c55b51e40a52a480273/log4shellpoc/log4shell%20poc%20instructions%20%26%20walkthrough%2023a26724347349ebb79a0e428037b6dd.html">
   <VM>
-    <Machine username="log4shell" password="log4shell" name="log4jshell" uuid="{1d201bff-d69d-46d6-bd60-4d768bd244a7}" OSType="Ubuntu2004" Project="ARPDemo" Domain="default">
+    <Machine username="log4shell" password="log4shell" name="Log4Shell" uuid="{1d201bff-d69d-46d6-bd60-4d768bd244a7}" OSType="Ubuntu2004" Project="ARPDemo" Domain="default">
       <VNC enabled="true">
         <VNCPort>5901</VNCPort>
       </VNC>

@@ -1,4 +1,5 @@
 import os
+import platform
 import base64
 import stat
 import subprocess
@@ -31,12 +32,12 @@ class DeterTunnelThread(threading.Thread):
 
     def run(self):
         permission = oct(os.stat(f"{PRIVATE_KEY_DIRECTORY_PATH}/{self.username}.pem")[stat.ST_MODE])[-3:]
-        if permission != '400':
-            print(f"Please run 'chmod 400 {PRIVATE_KEY_DIRECTORY_PATH}/{self.username}.pem'")
-        else:
+        if platform.system() == 'Windows' or permission == '400':
             My_SSH.port_forwarding(self.local_port, f"{self.node}.{self.exp}.{self.team}.ncl.sg", int(self.ssh_port),
                                    "users.ncl.sg", 22, self.username,
                                    f"{PRIVATE_KEY_DIRECTORY_PATH}/{self.username}.pem")
+        else:
+            print(f"Please run 'chmod 400 {PRIVATE_KEY_DIRECTORY_PATH}/{self.username}.pem'")
 
 
 class OpenStackTunnelThread(threading.Thread):
@@ -237,16 +238,13 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                         elif self.platform == 'Linux':
                             rdesktop_cmd = "rdesktop -a 16 127.0.0.1:" + str(local_port)
                         elif self.platform == 'Win':
-                            rdesktop_cmd = "rdesktop -a 16 localhost:" + str(local_port)
+                            rdesktop_cmd = "rdesktop -a 16 127.0.0.1:" + str(local_port)
                         print(rdesktop_cmd)
                         subprocess.run(rdesktop_cmd.split())
                 if (self.connection == 'SSH'):
                     # VM SSH
                     hostport = None
                     guestport = None
-                    vm_password_bytes = default.DETER_VM_PASSWORD.encode('utf-8')
-                    vm_password_base64_bytes = base64.b64encode(vm_password_bytes)
-                    vm_password_base64 = vm_password_base64_bytes.decode('utf')
                     NATNode = ProcessTag.getTagAttributeValue(self.document, 'NAT', 'enabled')
                     ForwardingNum = ProcessTag.getTextNodeValue(self.document, 'ForwardingNum')
                     # print(NATNode)
@@ -276,6 +274,8 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                             Forwarding.append([])
                     # print(Forwarding)
                     machine_name_list = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'name')
+                    usernameList = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'username')
+                    passwordList = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'password')
                     for index, name in enumerate(machine_name_list):
                         if name == machine_name:
                             for forwarding_entry in Forwarding[index]:
@@ -296,6 +296,11 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                         check_port_thread.start()
                         check_port_thread.join(timeout=5)
                         check_port_thread.terminate()
+                        ssh_user = usernameList[index]
+                        ssh_password = passwordList[index]
+                        ssh_password_bytes = ssh_password.encode('utf-8')
+                        ssh_password_base64_bytes = base64.b64encode(ssh_password_bytes)
+                        ssh_password_base64 = ssh_password_base64_bytes.decode('utf')
                         wssh_port = 8001
                         while Port.is_port_used(local_addr, wssh_port):
                             wssh_port += 1
@@ -305,8 +310,8 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                         check_port_thread.start()
                         check_port_thread.join(timeout=5)
                         check_port_thread.terminate()
-                        print(f"http://localhost:{wssh_port}/?hostname=localhost&port={local_port}&username={default.DETER_VM_USERNAME}&password={vm_password_base64}")
-                        webbrowser.open(f"http://localhost:{wssh_port}/?hostname=localhost&port={local_port}&username={default.DETER_VM_USERNAME}&password={vm_password_base64}")
+                        print(f"http://localhost:{wssh_port}/?hostname=localhost&port={local_port}&username={ssh_user}&password={ssh_password_base64}")
+                        webbrowser.open(f"http://localhost:{wssh_port}/?hostname=localhost&port={local_port}&username={ssh_user}&password={ssh_password_base64}")
                         # ssh_cmd = f"ssh -p {str(local_port)} -o StrictHostKeyChecking=no {default.VM_USERNAME}@localhost"
                         # ssh_cmd = f"ssh -p " + {str(
                         #     local_port)} + " -o StrictHostKeyChecking=no" + " {vagrant@localhost"
@@ -432,12 +437,6 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     VNCPortList = ProcessTag.getTextNodeValue(self.document, 'VNCPort')
                     ProviderIPList = ProcessTag.getTagAttributeValueWithCondition(self.document, 'Adapter', 'IP',
                                                                                   'name', 'Provider')
-                    # print(InstanceNameList)
-                    # print(VNCEnableList)
-                    # print(VNCPortList)
-                    # print(ProviderIPList)
-                    # exp_name_list = ProcessTag.getTagAttributeValue(self.document, 'Node', 'ExperimentName')
-                    # team_name_list = ProcessTag.getTagAttributeValue(self.document, 'Node', 'TeamName')
                     for index, value in enumerate(InstanceNameList):
                         if value == instance_name:
                             if VNCEnableList[index] == "false":
@@ -458,7 +457,7 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                                     vnc_cmd = "vncviewer 127.0.0.1:" + str(local_port)
                                 elif self.platform == 'Win':
                                     vnc_cmd = "vncviewer 127.0.0.1:" + str(local_port)
-                                print(vnc_cmd)
+                                # print(vnc_cmd)
                                 subprocess.run(vnc_cmd.split())
                                 break
             if (self.connection == 'SSH'):
@@ -471,12 +470,6 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     passwordList = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'password')
                     ProviderIPList = ProcessTag.getTagAttributeValueWithCondition(self.document, 'Adapter', 'IP',
                                                                                   'name', 'Provider')
-                    # print(InstanceNameList)
-                    # print(usernameList)
-                    # print(passwordList)
-                    # print(ProviderIPList)
-                    exp_name_list = ProcessTag.getTagAttributeValue(self.document, 'Node', 'ExperimentName')
-                    team_name_list = ProcessTag.getTagAttributeValue(self.document, 'Node', 'TeamName')
                     for index, value in enumerate(InstanceNameList):
                         if value == instance_name:
                             provider_ip = ProviderIPList[index]
@@ -487,13 +480,11 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                             check_port_thread.join(timeout=5)
                             check_port_thread.terminate()
                             # web ssh
-                            # node_user = 'log4shell'
-                            # node_password = 'log4shell'
-                            node_user = usernameList[index]
-                            node_password = passwordList[index]
-                            node_password_bytes = node_password.encode('utf-8')
-                            node_password_base64_bytes = base64.b64encode(node_password_bytes)
-                            node_password_base64 = node_password_base64_bytes.decode('utf')
+                            ssh_user = usernameList[index]
+                            ssh_password = passwordList[index]
+                            ssh_password_bytes = ssh_password.encode('utf-8')
+                            ssh_password_base64_bytes = base64.b64encode(ssh_password_bytes)
+                            ssh_password_base64 = ssh_password_base64_bytes.decode('utf')
                             wssh_port = 8001
                             while Port.is_port_used(local_addr, wssh_port):
                                 wssh_port += 1
@@ -504,10 +495,10 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                             check_port_thread.join(timeout=5)
                             check_port_thread.terminate()
                             print("http://localhost:" + str(wssh_port) + "/?hostname=localhost&port=" + str(
-                                local_port) + "&username=" + node_user + "&password=" + node_password_base64)
+                                local_port) + "&username=" + ssh_user + "&password=" + ssh_password_base64)
                             webbrowser.open(
                                 "http://localhost:" + str(wssh_port) + "/?hostname=localhost&port=" + str(
-                                    local_port) + "&username=" + node_user + "&password=" + node_password_base64)
+                                    local_port) + "&username=" + ssh_user + "&password=" + ssh_password_base64)
 
                             # cmd ssh
                             # ssh_cmd = "ssh -p " + str(
@@ -595,7 +586,4 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             pass
 
     def runscript(self, file_path):
-        print('RunScript Clicked!')
-        username = self.ui.lineEdit.text()
-        print(type(oct(os.stat(f"{PRIVATE_KEY_DIRECTORY_PATH}/{username}.pem")[stat.ST_MODE])))
-        print(type(oct(os.stat(f"{PRIVATE_KEY_DIRECTORY_PATH}/{username}.pem")[stat.ST_MODE])[-3:]))
+        print('Nothing Happens!')
