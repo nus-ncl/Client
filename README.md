@@ -214,18 +214,21 @@ $ vncviewer
       - If you use Username `nologin` that we provide, no more further operations 
       - If you use your own NCL Testbed Username(e.g. `joedoe`)
         - put your private key to the `private_key` folder and name it as `<Username>.pem`(e.g. `joedoe.pem`)
-        - change the file mode of the private key to `400` by `chmod 400 <Username>.pem`
+        - (not applicable for Windows) change the file mode of the private key to `400` by `chmod 400 <Username>.pem`
    
 2. Click the ``Choose XML ...`` button and choose your client xml file.
-3. Click 'Confirm' button to show remote machines
+3. Click 'Confirm' button to show your remote machines on NCL Testbed
 4. Select your local platform
 5. Select your method to access to the machine
    - 'Console': access with GUI
-   - 'SSH' access without GUI via web browser
+   - 'SSH': access without GUI via web browser
 6. Double-click the machine entry to access it
 7. Click 'Tutorial' button to show a window of the relavant documentation
 8. Click 'Reset' button if 'Console' accessing method ALWAYS failed
-9. 'Nothing' Button is a future function button, to be continued...
+
+   *caution*
+   - single-click to select the machine you want to reset before clicking 'Reset'
+10. 'Nothing' Button is a future function button, to be continued...
 
 
 
