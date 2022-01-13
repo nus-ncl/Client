@@ -50,12 +50,12 @@ class OpenStackTunnelThread(threading.Thread):
 
     def run(self):
         permission = oct(os.stat(f"{PRIVATE_KEY_DIRECTORY_PATH}/{self.username}.pem")[stat.ST_MODE])[-3:]
-        if permission != '400':
-            print(f"Please run 'chmod 400 {PRIVATE_KEY_DIRECTORY_PATH}/{self.username}.pem'")
-        else:
+        if platform.system() == 'Windows' or permission == '400':
             My_SSH.port_forwarding(self.local_port, self.remote_host, int(self.remote_port),
                                    "gateway.ncl.sg", 22, self.username,
                                    f"{PRIVATE_KEY_DIRECTORY_PATH}/{self.username}.pem")
+        else:
+            print(f"Please run 'chmod 400 {PRIVATE_KEY_DIRECTORY_PATH}/{self.username}.pem'")
 
 
 class CheckPortThread(threading.Thread):
