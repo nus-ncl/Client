@@ -221,10 +221,11 @@ $ vncviewer
 4. Select your local platform
 5. Select your method to access to the machine
    - 'Console': access with GUI
-   - 'SSH': access without GUI via web browser
-6. Double-click the machine entry to access it
-7. Click 'Tutorial' button to show a window of the relavant documentation
-8. Click 'Reset' button if 'Console' accessing method ALWAYS failed
+   - 'SSH': access without GUI via web browser(try again if failed)
+   
+7. Double-click the machine entry to access it
+8. Click 'Tutorial' button to show a window of the relavant documentation
+9. Click 'Reset' button if 'Console' accessing method ALWAYS failed
 
    *caution*
    - single-click to select the machine you want to reset before clicking 'Reset'
