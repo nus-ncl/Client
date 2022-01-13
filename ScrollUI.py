@@ -340,6 +340,8 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         QtCore.QObject.connect(self.treeWidget, QtCore.SIGNAL("itemDoubleClicked(QTreeWidgetItem*,int)"),
                                MainWindow.doubleclick)
+        QtCore.QObject.connect(self.treeWidget, QtCore.SIGNAL("itemClicked(QTreeWidgetItem*,int)"),
+                               MainWindow.click)
         self.pushButton.clicked.connect(lambda: MainWindow.openFile(self.cwd))
         self.pushButton_6.clicked.connect(lambda: MainWindow.confirm(self.cwd))
         self.pushButton_7.clicked.connect(lambda: MainWindow.tutorial(self.cwd))

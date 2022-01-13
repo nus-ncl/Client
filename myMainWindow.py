@@ -9,7 +9,6 @@ import My_SSH
 import threading
 import time
 import webbrowser
-from pathlib import Path
 from PySide6 import QtWidgets
 from PySide6.QtWidgets import QFileDialog
 from ScrollUI import Ui_MainWindow
@@ -99,10 +98,11 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.target_platform = None
         self.url = None
         self.connection = None
-        self.vm_connection_method = None
-        self.node_connection_method = None
+        # self.vm_connection_method = None
+        # self.node_connection_method = None
         self.Populate(self.Node_QTreeWidgetItem)
         self.browser = browser
+        self.instance_selected = None
 
     def updateQTreeWidgetItem(self):
         if self.target_platform == 'deter':
@@ -119,26 +119,24 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.Node_QTreeWidgetItem.append(QtWidgets.QTreeWidgetItem(Node_set[i:i + 1]))
 
             for i in range(len(Machine)):
-                node_Belong_To = Node_set.index(Node[i])
-                machine = QtWidgets.QTreeWidgetItem([Machine[i], Exp[i], Team[i]])
-                self.Node_QTreeWidgetItem[node_Belong_To].addChild(machine)
+                node_belong_to = Node_set.index(Node[i])
+                entry = QtWidgets.QTreeWidgetItem([Machine[i], Exp[i], Team[i]])
+                self.Node_QTreeWidgetItem[node_belong_to].addChild(entry)
         elif self.target_platform == 'openstack':
-            Node = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'Project')
-            Machine = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'name')
-            Exp = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'Project')
-            Team = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'Domain')
-
-            Node_set = list(set(Node))
-            Node_set.sort()
-
+            Project = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'Project')
+            Instance = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'name')
+            # Exp = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'Project')
+            Domain = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'Domain')
+            Project_set = list(set(Project))
+            Project_set.sort()
             self.Node_QTreeWidgetItem = []
-            for i in range(len(Node_set)):
-                self.Node_QTreeWidgetItem.append(QtWidgets.QTreeWidgetItem(Node_set[i:i + 1]))
+            for i in range(len(Project_set)):
+                self.Node_QTreeWidgetItem.append(QtWidgets.QTreeWidgetItem(Project_set[i:i + 1]))
 
-            for i in range(len(Machine)):
-                node_Belong_To = Node_set.index(Node[i])
-                machine = QtWidgets.QTreeWidgetItem([Machine[i], Exp[i], Team[i]])
-                self.Node_QTreeWidgetItem[node_Belong_To].addChild(machine)
+            for i in range(len(Instance)):
+                project_belong_to = Project_set.index(Project[i])
+                entry = QtWidgets.QTreeWidgetItem([Instance[i], Project[i], Domain[i]])
+                self.Node_QTreeWidgetItem[project_belong_to].addChild(entry)
 
         # clear previous treeWidget items and populate the new
         self.ui.treeWidget.clear()
@@ -178,8 +176,9 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         #     else:
         #         self.node_connection_method = None
 
-    def click(self):
-        print("Plz double click!")
+    def click(self, item):
+        self.instance_selected = item.text(0)
+        print(f"You've selected the machine: {self.instance_selected}")
 
     def doubleclick(self, item):
         username = self.ui.lineEdit.text()
@@ -470,8 +469,6 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     InstanceNameList = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'name')
                     usernameList = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'username')
                     passwordList = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'password')
-                    VNCEnableList = ProcessTag.getTagAttributeValue(self.document, 'VNC', 'enabled')
-                    VNCPortList = ProcessTag.getTextNodeValue(self.document, 'VNCPort')
                     ProviderIPList = ProcessTag.getTagAttributeValueWithCondition(self.document, 'Adapter', 'IP',
                                                                                   'name', 'Provider')
                     # print(InstanceNameList)
@@ -555,12 +552,47 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.browser.show()
 
     def resetvnc(self, file_path):
+        # vncserver -localhost no :1
+        # vncserver -kill :1
+        # vncserver -list
         print('ResetVNC Clicked!')
-        ssh_cmd = f"vncserver -kill :1; vncserver -localhost no :1"
+        username = self.ui.lineEdit.text()
+        local_addr = '127.0.0.1'
+        local_port = 12345
+        while Port.is_port_used(local_addr, local_port):
+            local_port += 1
+
+        # reset_ssh_cmd = f"vncserver -kill :1; vncserver -localhost no :1"
+        reset_ssh_cmd = f"vncserver -kill :1; vncserver -localhost no :1"
+
         if self.target_platform == 'openstack':
-            print(f"ssh username@ip {ssh_cmd}")
+            if self.instance_selected is None:
+                print("Please select the machine that you want to reset")
+            else:
+                InstanceNameList = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'name')
+                usernameList = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'username')
+                ProviderIPList = ProcessTag.getTagAttributeValueWithCondition(self.document, 'Adapter', 'IP',
+                                                                              'name', 'Provider')
+
+                for index, value in enumerate(InstanceNameList):
+                    if value == self.instance_selected:
+                        provider_ip = ProviderIPList[index]
+                        ssh_user = usernameList[index]
+                        ssh_thread = OpenStackTunnelThread(local_port, provider_ip, 22, username)
+                        ssh_thread.start()
+                        check_port_thread = CheckPortThread(local_port)
+                        check_port_thread.start()
+                        check_port_thread.join(timeout=5)
+                        check_port_thread.terminate()
+                        ssh_resetvnc_cmd = f"ssh -p {local_port} {ssh_user}@127.0.0.1 {reset_ssh_cmd}"
+                        print(ssh_resetvnc_cmd)
+                        subprocess.run(ssh_resetvnc_cmd.split())
+                        # process = subprocess.Popen(ssh_resetvnc_cmd, shell=True, stdout=subprocess.PIPE)
+                        # process.wait()
+                        # print(f"return code:{process.returncode}")
+                        break
         elif self.target_platform == 'deter':
-            print(f"ssh username@ip {ssh_cmd}")
+            pass
 
     def runscript(self, file_path):
         print('RunScript Clicked!')
