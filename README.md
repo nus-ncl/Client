@@ -68,13 +68,13 @@ It provides a clean GUI to automate the procedure of SSH tunneling, port binding
 * [Ubuntu](#get-started-from-ubuntu)
 
 ### Get started from MacOS
-#### [Step1: git clone/download this repository]
+#### [Step1: git clone or download this repository]
 
-* git:
+* `(option1)` git:
   ```sh
   $ git clone https://github.com/nus-ncl/Client.git
   ```
-* Download from the url below:
+* `(option2)` Download from the url below:
 
   [Client-master](https://github.com/nus-ncl/Client/archive/refs/heads/master.zip)
 
@@ -106,13 +106,14 @@ It provides a clean GUI to automate the procedure of SSH tunneling, port binding
   ```
 
 ### Get started from Windows
+using `Command Prompt` or known as `CMD.exe`
 #### [Step1: git clone/download this repository]
 
-* git:
+* `(option1)` git:
   ```sh
   $ git clone https://github.com/nus-ncl/Client.git
   ```
-* Download from the url below:
+* `(option2)` Download from the url below:
 
   [Client-master](https://github.com/nus-ncl/Client/archive/refs/heads/master.zip)
 
@@ -167,11 +168,11 @@ $ vncviewer
 ### Get started from Ubuntu
 #### [Step1: git clone/download this repository]
 
-* git:
+* `(option1)` git:
   ```sh
   $ git clone https://github.com/nus-ncl/Client.git
   ```
-* Download from the url below:
+* `(option2)` Download from the url below:
 
   [Client-master](https://github.com/nus-ncl/Client/archive/refs/heads/master.zip)
 

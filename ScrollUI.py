@@ -40,7 +40,7 @@ class Ui_MainWindow(object):
         self.label = QtWidgets.QLabel(self.centralwidget)
         self.label.setGeometry(QtCore.QRect(150, 60, 469, 26))
         font = QtGui.QFont()
-        font.setFamily("Segoe Print")
+        font.setFamily("Segoe Print Bold")
         font.setPointSize(22)
         font.setBold(False)
         font.setItalic(False)
@@ -52,7 +52,7 @@ class Ui_MainWindow(object):
 
         # subtitle
         self.label_sub = QtWidgets.QLabel(self.centralwidget)
-        self.label_sub.setGeometry(QtCore.QRect(20, 70, 519, 76))
+        self.label_sub.setGeometry(QtCore.QRect(60, 80, 449, 46))
         font = QtGui.QFont()
         font.setFamily("Segoe Print")
         font.setPointSize(12)

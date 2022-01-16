@@ -11,6 +11,8 @@ if __name__ == '__main__':
         app = QtWidgets.QApplication(sys.argv)
 
     browser = QWebEngineView()
+
     window = myMainWindow.myMainWindow(browser)
+    window.setWindowTitle("NCL Client")
     window.show()
     sys.exit(app.exec())
