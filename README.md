@@ -90,9 +90,8 @@ It provides a clean GUI to automate the procedure of SSH tunneling, port binding
 #### [Step3: create a python virtual environment]
   ```shell
   # Enter main folder
-  $ cd Client # or 'cd Client-master'
-  $ python3.9 -m pip install virtualenv 
-  $ python3.9 -m virtualenv venv
+  $ cd Client # or 'cd Client-master' 
+  $ python3.9 -m venv venv
   ```
 
 #### [Step4: enter the python virtual environment & install dependencies]
@@ -151,8 +150,7 @@ $ vncviewer
   ```shell
   # Enter main folder
   $ cd Client # or 'cd Client-master'
-  $ python3.9 -m pip install virtualenv 
-  $ python3.9 -m virtualenv venv
+  $ python3.9 -m venv venv
   ```
 
 #### [Step5: enter the python virtual environment & install dependencies]
@@ -190,8 +188,7 @@ $ vncviewer
   ```shell
   # Enter main folder
   $ cd Client # or 'cd Client-master'
-  $ python3.9 -m pip install virtualenv 
-  $ python3.9 -m virtualenv venv
+  $ python3.9 -m venv venv
   ```
 
 #### [Step4: enter the python virtual environment & install dependencies]
