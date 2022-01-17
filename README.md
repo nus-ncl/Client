@@ -102,7 +102,7 @@ It provides a clean GUI to automate the procedure of SSH tunneling, port binding
   ```
 #### [Step5: run it]
   ```shell
-  (venv)$ python main.py
+  (venv)$ python client.py
   ```
 
 ### Get started from Windows
@@ -162,7 +162,7 @@ $ vncviewer
   ```
 #### [Step6: run it]
   ```shell
-  (venv)$ python main.py
+  (venv)$ python client.py
   ```
 
 ### Get started from Ubuntu
@@ -201,7 +201,7 @@ $ vncviewer
   ```
 #### [Step5: run it]
   ```shell
-  (venv)$ python main.py
+  (venv)$ python client.py
   ```
 
 <!-- USAGE EXAMPLES -->
@@ -265,7 +265,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Huang Kang - [dcshka@nus.edu.sg]
+Huang Kang - [huangk@nus.edu.sg]
 
 Project Link: [https://github.com/nus-ncl/Client](https://github.com/nus-ncl/Client)
 
