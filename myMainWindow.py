@@ -95,7 +95,7 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.ui.setupUi(self)
         self.Node_QTreeWidgetItem = []
         self.platform = None
-        self.CVE = None
+        # self.CVE = None
         self.target_platform = None
         self.url = None
         self.connection = None
@@ -107,8 +107,9 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def updateQTreeWidgetItem(self):
         if self.target_platform == 'deter':
-            Node = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'Node')
+            Node = ProcessTag.getTagAttributeValue(self.document, 'Node', 'name')
             Machine = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'name')
+            MachineOnNode = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'Node')
             Exp = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'ExperimentName')
             Team = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'TeamName')
 
@@ -120,7 +121,8 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.Node_QTreeWidgetItem.append(QtWidgets.QTreeWidgetItem(Node_set[i:i + 1]))
 
             for i in range(len(Machine)):
-                node_belong_to = Node_set.index(Node[i])
+                # node_belong_to = Node_set.index(Node[i])
+                node_belong_to = Node_set.index(MachineOnNode[i])
                 entry = QtWidgets.QTreeWidgetItem([Machine[i], Exp[i], Team[i]])
                 self.Node_QTreeWidgetItem[node_belong_to].addChild(entry)
         elif self.target_platform == 'openstack':
@@ -192,132 +194,115 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if self.target_platform == 'deter':
             # machine doubleclick
             if item.parent():
-                print('You double-click the Machine')
-                node_name = item.parent().text(0)
-                machine_name = item.text(0)
-                exp_name = item.text(1)
-                team_name = item.text(2)
-                # if (self.platform == 'Linux' or self.platform == 'MacOS'):
-                if (self.connection == 'Console'):
-                    # VM VRDE Console
-                    remoteDisplayEnabled = ProcessTag.getTagAttributeValue(self.document, 'RemoteDisplay',
-                                                                           'enabled')
-                    remoteDisplayPort = ProcessTag.getTagAttributeValueWithCondition(self.document, 'Property',
-                                                                                     'value',
-                                                                                     'name', 'TCP/Ports')
-                    # print(remoteDisplayEnabled)
-                    # print(remoteDisplayPort)
-                    for index, enabled in enumerate(remoteDisplayEnabled):
-                        if enabled == 'false':
-                            # remoteDisplayPort.insert(index, None)
-                            remoteDisplayPort[index] = None
-                    # print(remoteDisplayPort)
-                    machine_name_list = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'name')
-                    # print(machine_name_list)
-                    # print(remoteDisplayPort)
-                    for index, name in enumerate(machine_name_list):
-                        if name == machine_name:
-                            rdp_port = remoteDisplayPort[index]
-                            break
-                    if not rdp_port:
-                        print("This Machine's rdesktop port hasn't been set!")
-                    else:
-                        '''
-                        -f: Go to background
-                        -N: Do not execute a remote command. This is useful for just forwarding ports
-                        -T: Disable pseudo-tty allocation
-                        '''
-                        ssh_thread = DeterTunnelThread(local_port, node_name, exp_name, team_name, rdp_port, username)
-                        ssh_thread.start()
-                        check_port_thread = CheckPortThread(local_port)
-                        check_port_thread.start()
-                        check_port_thread.join(timeout=5)
-                        check_port_thread.terminate()
-                        if self.platform == 'MacOS':
-                            rdesktop_cmd = "open rdp://127.0.0.1:" + str(local_port)
-                        elif self.platform == 'Linux':
-                            rdesktop_cmd = "rdesktop -a 16 127.0.0.1:" + str(local_port)
-                        elif self.platform == 'Win':
-                            rdesktop_cmd = "rdesktop -a 16 127.0.0.1:" + str(local_port)
-                        print(rdesktop_cmd)
-                        subprocess.run(rdesktop_cmd.split())
-                if (self.connection == 'SSH'):
-                    # VM SSH
-                    hostport = None
-                    guestport = None
-                    NATNode = ProcessTag.getTagAttributeValue(self.document, 'NAT', 'enabled')
-                    ForwardingNum = ProcessTag.getTextNodeValue(self.document, 'ForwardingNum')
-                    # print(NATNode)
-                    # print(ForwardingNum)
-                    for index, value in enumerate(NATNode):
-                        if value == 'false':
-                            # ForwardingNum.insert(index, None)
-                            ForwardingNum[index] = None
-                    # print(ForwardingNum)
-                    ForwardingName = ProcessTag.getTagAttributeValue(self.document, 'Forwarding', 'name')
-                    Forwardinghostport = ProcessTag.getTagAttributeValue(self.document, 'Forwarding', 'hostport')
-                    Forwardingguestport = ProcessTag.getTagAttributeValue(self.document, 'Forwarding', 'guestport')
-                    AllForwardings = []
-                    for index in range(len(ForwardingName)):
-                        AllForwardings.append(
-                            (ForwardingName[index], Forwardinghostport[index], Forwardingguestport[index]))
-                    # print(AllForwardings)
-                    Forwarding = []
-                    start = 0
-                    end = 0
-                    for num in ForwardingNum:
-                        if num:
-                            end = end + int(num)
-                            Forwarding.append(AllForwardings[start:end])
-                            start = end
-                        else:
-                            Forwarding.append([])
-                    # print(Forwarding)
-                    machine_name_list = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'name')
-                    usernameList = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'username')
-                    passwordList = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'password')
-                    for index, name in enumerate(machine_name_list):
-                        if name == machine_name:
-                            for forwarding_entry in Forwarding[index]:
-                                # print(forwarding_entry)
-                                if forwarding_entry[0] == 'ssh':
-                                    hostport = forwarding_entry[1]
-                                    guestport = forwarding_entry[2]
-                                    # print(hostport)
-                                    # print(guestport)
-                                    break
-                            break
-                    if not hostport or not guestport:
-                        print("This VM's SSH port hasn't been port forwarded!")
-                    else:
-                        ssh_thread = DeterTunnelThread(local_port, node_name, exp_name, team_name, hostport, username)
-                        ssh_thread.start()
-                        check_port_thread = CheckPortThread(local_port)
-                        check_port_thread.start()
-                        check_port_thread.join(timeout=5)
-                        check_port_thread.terminate()
-                        ssh_user = usernameList[index]
-                        ssh_password = passwordList[index]
-                        ssh_password_bytes = ssh_password.encode('utf-8')
-                        ssh_password_base64_bytes = base64.b64encode(ssh_password_bytes)
-                        ssh_password_base64 = ssh_password_base64_bytes.decode('utf')
-                        wssh_port = 8001
-                        while Port.is_port_used(local_addr, wssh_port):
-                            wssh_port += 1
-                        wssh_thread = WSSH_Thread(wssh_port)
-                        wssh_thread.start()
-                        check_port_thread = CheckPortThread(wssh_port)
-                        check_port_thread.start()
-                        check_port_thread.join(timeout=5)
-                        check_port_thread.terminate()
-                        print(f"http://localhost:{wssh_port}/?hostname=localhost&port={local_port}&username={ssh_user}&password={ssh_password_base64}")
-                        webbrowser.open(f"http://localhost:{wssh_port}/?hostname=localhost&port={local_port}&username={ssh_user}&password={ssh_password_base64}")
-                        # ssh_cmd = f"ssh -p {str(local_port)} -o StrictHostKeyChecking=no {default.VM_USERNAME}@localhost"
-                        # ssh_cmd = f"ssh -p " + {str(
-                        #     local_port)} + " -o StrictHostKeyChecking=no" + " {vagrant@localhost"
-                        # print(ssh_cmd)
-                        # subprocess.run(ssh_cmd.split())
-                        # break
+                pass
+                # print('You double-click the Machine')
+                # node_name = item.parent().text(0)
+                # machine_name = item.text(0)
+                # exp_name = item.text(1)
+                # team_name = item.text(2)
+                # if (self.connection == 'Console'):
+                #     # VM VRDE Console
+                #     remoteDisplayEnabled = ProcessTag.getTagAttributeValue(self.document, 'RemoteDisplay',
+                #                                                            'enabled')
+                #     remoteDisplayPort = ProcessTag.getTagAttributeValueWithCondition(self.document, 'Property',
+                #                                                                      'value',
+                #                                                                      'name', 'TCP/Ports')
+                #
+                #     for index, enabled in enumerate(remoteDisplayEnabled):
+                #         if enabled == 'false':
+                #             remoteDisplayPort[index] = None
+                #     machine_name_list = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'name')
+                #
+                #     for index, name in enumerate(machine_name_list):
+                #         if name == machine_name:
+                #             rdp_port = remoteDisplayPort[index]
+                #             break
+                #     if not rdp_port:
+                #         print("This Machine's rdesktop port hasn't been set!")
+                #     else:
+                #         '''
+                #         -f: Go to background
+                #         -N: Do not execute a remote command. This is useful for just forwarding ports
+                #         -T: Disable pseudo-tty allocation
+                #         '''
+                #         ssh_thread = DeterTunnelThread(local_port, node_name, exp_name, team_name, rdp_port, username)
+                #         ssh_thread.start()
+                #         check_port_thread = CheckPortThread(local_port)
+                #         check_port_thread.start()
+                #         check_port_thread.join(timeout=5)
+                #         check_port_thread.terminate()
+                #         if self.platform == 'MacOS':
+                #             rdesktop_cmd = "open rdp://127.0.0.1:" + str(local_port)
+                #         elif self.platform == 'Linux':
+                #             rdesktop_cmd = "rdesktop -a 16 127.0.0.1:" + str(local_port)
+                #         elif self.platform == 'Win':
+                #             rdesktop_cmd = "rdesktop -a 16 127.0.0.1:" + str(local_port)
+                #         subprocess.run(rdesktop_cmd.split())
+                # if (self.connection == 'SSH'):
+                #     # VM SSH
+                #     hostport = None
+                #     guestport = None
+                #     NATNode = ProcessTag.getTagAttributeValue(self.document, 'NAT', 'enabled')
+                #     ForwardingNum = ProcessTag.getTextNodeValue(self.document, 'ForwardingNum')
+                #
+                #     for index, value in enumerate(NATNode):
+                #         if value == 'false':
+                #             ForwardingNum[index] = None
+                #
+                #     ForwardingName = ProcessTag.getTagAttributeValue(self.document, 'Forwarding', 'name')
+                #     Forwardinghostport = ProcessTag.getTagAttributeValue(self.document, 'Forwarding', 'hostport')
+                #     Forwardingguestport = ProcessTag.getTagAttributeValue(self.document, 'Forwarding', 'guestport')
+                #     AllForwardings = []
+                #     for index in range(len(ForwardingName)):
+                #         AllForwardings.append(
+                #             (ForwardingName[index], Forwardinghostport[index], Forwardingguestport[index]))
+                #     Forwarding = []
+                #     start = 0
+                #     end = 0
+                #     for num in ForwardingNum:
+                #         if num:
+                #             end = end + int(num)
+                #             Forwarding.append(AllForwardings[start:end])
+                #             start = end
+                #         else:
+                #             Forwarding.append([])
+                #     machine_name_list = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'name')
+                #     usernameList = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'username')
+                #     passwordList = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'password')
+                #     for index, name in enumerate(machine_name_list):
+                #         if name == machine_name:
+                #             for forwarding_entry in Forwarding[index]:
+                #                 if forwarding_entry[0] == 'ssh':
+                #                     hostport = forwarding_entry[1]
+                #                     guestport = forwarding_entry[2]
+                #                     break
+                #             break
+                #     if not hostport or not guestport:
+                #         print("This VM's SSH port hasn't been port forwarded!")
+                #     else:
+                #         ssh_thread = DeterTunnelThread(local_port, node_name, exp_name, team_name, hostport, username)
+                #         ssh_thread.start()
+                #         check_port_thread = CheckPortThread(local_port)
+                #         check_port_thread.start()
+                #         check_port_thread.join(timeout=5)
+                #         check_port_thread.terminate()
+                #         ssh_user = usernameList[index]
+                #         ssh_password = passwordList[index]
+                #         ssh_password_bytes = ssh_password.encode('utf-8')
+                #         ssh_password_base64_bytes = base64.b64encode(ssh_password_bytes)
+                #         ssh_password_base64 = ssh_password_base64_bytes.decode('utf')
+                #         wssh_port = 8001
+                #         while Port.is_port_used(local_addr, wssh_port):
+                #             wssh_port += 1
+                #         wssh_thread = WSSH_Thread(wssh_port)
+                #         wssh_thread.start()
+                #         check_port_thread = CheckPortThread(wssh_port)
+                #         check_port_thread.start()
+                #         check_port_thread.join(timeout=5)
+                #         check_port_thread.terminate()
+                #         print(f"http://localhost:{wssh_port}/?hostname=localhost&port={local_port}&username={ssh_user}&password={ssh_password_base64}")
+                #         webbrowser.open(f"http://localhost:{wssh_port}/?hostname=localhost&port={local_port}&username={ssh_user}&password={ssh_password_base64}")
+
             # node doubleclick
             else:
                 print('You double-click the Node')
@@ -327,16 +312,12 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     if self.platform is None:
                         print("Please select your running platform")
                     else:
+                        node_name_list = ProcessTag.getTagAttributeValue(self.document, 'Node', 'name')
                         VNCEnableList = ProcessTag.getTagAttributeValue(self.document, 'VNC', 'enabled')
                         VNCPortList = ProcessTag.getTextNodeValue(self.document, 'VNCPort')
-                        node_name_list = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'Node')
-                        exp_name_list = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'ExperimentName')
-                        team_name_list = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'TeamName')
-                        print(VNCEnableList)
-                        print(VNCPortList)
-                        print(node_name_list)
-                        print(exp_name_list)
-                        print(team_name_list)
+                        exp_name_list = ProcessTag.getTagAttributeValue(self.document, 'Node', 'ExperimentName')
+                        team_name_list = ProcessTag.getTagAttributeValue(self.document, 'Node', 'TeamName')
+
                         for index, value in enumerate(node_name_list):
                             if value == node_name:
                                 exp_name = exp_name_list[index]
@@ -346,8 +327,7 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                                     break
                                 else:
                                     vnc_port = VNCPortList[index]
-                                    print(VNCEnableList)
-                                    print(vnc_port)
+
                                     ssh_thread = DeterTunnelThread(local_port, node_name, exp_name, team_name, vnc_port,
                                                                    username)
                                     ssh_thread.start()
@@ -356,32 +336,11 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                                     check_port_thread.join(timeout=5)
                                     check_port_thread.terminate()
                                     if self.platform == 'MacOS':
-                                        # VNCEnableList = ProcessTag.getTagAttributeValue(self.document, 'VNC', 'enabled')
-                                        # VNCPortList = ProcessTag.getTextNodeValue(self.document, 'VNCPort')
-                                        # node_name_list = ProcessTag.getTagAttributeValue(self.document, 'Node', 'name')
-                                        # exp_name_list = ProcessTag.getTagAttributeValue(self.document, 'Node', 'ExperimentName')
-                                        # team_name_list = ProcessTag.getTagAttributeValue(self.document, 'Node', 'TeamName')
-                                        # for index, value in enumerate(node_name_list):
-                                        # 	if value == node_name:
-                                        # 		exp_name = exp_name_list[index]
-                                        # 		team_name = team_name_list[index]
-                                        # 		if VNCEnableList[index] == "false":
-                                        # 			print('VNC or VNCPort has not been set for this node')
-                                        # 			break
-                                        # 		else:
-                                        # 			vnc_port = VNCPortList[index]
-                                        # 			ssh_thread = TunnelThread(local_port, node_name, exp_name, team_name, vnc_port,
-                                        # 			                          username)
-                                        # 			ssh_thread.start()
-                                        # 			check_port_thread = CheckPortThread(local_port)
-                                        # 			check_port_thread.start()
-                                        # 			check_port_thread.join()
                                         vnc_cmd = "open vnc://127.0.0.1:" + str(local_port)
                                     elif self.platform == 'Linux':
                                         vnc_cmd = "vncviewer 127.0.0.1:" + str(local_port)
                                     elif self.platform == 'Win':
                                         vnc_cmd = "vncviewer 127.0.0.1:" + str(local_port)
-                                    print(vnc_cmd)
                                     subprocess.run(vnc_cmd.split())
                                     break
                 elif (self.connection == 'SSH'):
@@ -391,9 +350,13 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     node_password_base64_bytes = base64.b64encode(node_password_bytes)
                     node_password_base64 = node_password_base64_bytes.decode('utf')
                     guestport = 22
-                    node_name_list = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'Node')
-                    exp_name_list = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'ExperimentName')
-                    team_name_list = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'TeamName')
+                    node_name_list = ProcessTag.getTagAttributeValue(self.document, 'Node', 'name')
+                    exp_name_list = ProcessTag.getTagAttributeValue(self.document, 'Node', 'ExperimentName')
+                    team_name_list = ProcessTag.getTagAttributeValue(self.document, 'Node', 'TeamName')
+
+                    # node_name_list = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'Node')
+                    # exp_name_list = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'ExperimentName')
+                    # team_name_list = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'TeamName')
 
                     for index, value in enumerate(node_name_list):
                         if value == node_name:
@@ -416,8 +379,8 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     check_port_thread.start()
                     check_port_thread.join(timeout=5)
                     check_port_thread.terminate()
-                    print("http://localhost:" + str(wssh_port) + "/?hostname=localhost&port=" + str(
-                        local_port) + "&username=" + default.DETER_NODE_USERNAME + "&password=" + node_password_base64)
+                    # print("http://localhost:" + str(wssh_port) + "/?hostname=localhost&port=" + str(
+                    #     local_port) + "&username=" + default.DETER_NODE_USERNAME + "&password=" + node_password_base64)
                     webbrowser.open("http://localhost:" + str(wssh_port) + "/?hostname=localhost&port=" + str(
                         local_port) + "&username=" + default.DETER_NODE_USERNAME + "&password=" + node_password_base64)
         elif self.target_platform == 'openstack':
@@ -526,7 +489,7 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         print(path)
         self.document = IOXML.parseXML(str(path[0]))
         self.target_platform = ProcessTag.getRootElementAttributeValue(self.document, 'platform')
-        self.CVE = ProcessTag.getRootElementAttributeValue(self.document, 'CVE')
+        # self.CVE = ProcessTag.getRootElementAttributeValue(self.document, 'CVE')
         self.url = ProcessTag.getRootElementAttributeValue(self.document, 'url')
         # self.updateQTreeWidgetItem()
         # self.browser.load(QUrl(self.url))
@@ -535,7 +498,7 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def confirm(self, file_path):
         print('Confirm Clicked!')
         self.updateQTreeWidgetItem()
-        print(f"Currently: {self.CVE}")
+        # print(f"Currently: {self.CVE}")
 
     def tutorial(self, file_path):
         print('Tutorial Clicked!')
