@@ -9,6 +9,14 @@
         <Adapter name="Provider" enabled="true" IP="10.10.0.219" MACAddress="0800275F82B1"/>
       </Network>
     </Machine>
+    <Machine username="log4shell" password="log4shell" name="Log4Shell2" uuid="{1d201bff-d69d-46d6-bd60-4d768bd244a7}" OSType="Ubuntu2004" Project="ARPDemo" Domain="default">
+      <VNC enabled="true">
+        <VNCPort>5901</VNCPort>
+      </VNC>
+      <Network>
+        <Adapter name="Provider" enabled="true" IP="10.10.0.219" MACAddress="0800275F82B1"/>
+      </Network>
+    </Machine>
   </VM>
 </Client>
 
