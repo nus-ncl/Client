@@ -194,7 +194,6 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if self.target_platform == 'deter':
             # machine doubleclick
             if item.parent():
-                pass
                 print('You double-click the Machine')
                 node_name = item.parent().text(0)
                 machine_name = item.text(0)
@@ -249,17 +248,16 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     #     if value == 'false':
                     #         ForwardingNum[index] = 0
 
-                    ForwardingName = ProcessTag.getTagAttributeValue(self.document, 'Forwarding', 'name')
+                    # ForwardingName = ProcessTag.getTagAttributeValue(self.document, 'Forwarding', 'name')
                     Forwardinghostport = ProcessTag.getTagAttributeValue(self.document, 'Forwarding', 'hostport')
                     Forwardingguestport = ProcessTag.getTagAttributeValue(self.document, 'Forwarding', 'guestport')
                     print(ForwardingNum)
-                    print(ForwardingName)
+                    # print(ForwardingName)
                     print(Forwardinghostport)
                     print(Forwardingguestport)
                     AllForwardings = []
-                    for index in range(len(ForwardingName)):
-                        AllForwardings.append(
-                            (ForwardingName[index], Forwardinghostport[index], Forwardingguestport[index]))
+                    for index in range(len(Forwardinghostport)):
+                        AllForwardings.append((Forwardinghostport[index], Forwardingguestport[index]))
                     print(AllForwardings)
                     Forwarding = []
                     start = 0
@@ -278,9 +276,9 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     for index, name in enumerate(machine_name_list):
                         if name == machine_name:
                             for forwarding_entry in Forwarding[index]:
-                                if forwarding_entry[0] == 'ssh':
-                                    hostport = forwarding_entry[1]
-                                    guestport = forwarding_entry[2]
+                                if forwarding_entry[1] == '22':
+                                    hostport = forwarding_entry[0]
+                                    guestport = forwarding_entry[1]
                                     break
                             break
                     if not hostport or not guestport:
@@ -392,92 +390,95 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     webbrowser.open("http://localhost:" + str(wssh_port) + "/?hostname=localhost&port=" + str(
                         local_port) + "&username=" + default.DETER_NODE_USERNAME + "&password=" + node_password_base64)
         elif self.target_platform == 'openstack':
-            # machine doubleclick
-            # node_name = item.parent().text(0)
-            instance_name = item.text(0)
-            project_name = item.text(1)
-            domain_name = item.text(2)
-            # if (self.platform == 'Linux' or self.platform == 'MacOS'):
-            if (self.connection == 'Console'):
-                # VNC
-                if self.platform is None:
-                    print("Please select your local running platform")
-                else:
-                    InstanceNameList = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'name')
-                    VNCEnableList = ProcessTag.getTagAttributeValue(self.document, 'VNC', 'enabled')
-                    VNCPortList = ProcessTag.getTextNodeValue(self.document, 'VNCPort')
-                    ProviderIPList = ProcessTag.getTagAttributeValueWithCondition(self.document, 'Adapter', 'IP',
-                                                                                  'name', 'Provider')
-                    for index, value in enumerate(InstanceNameList):
-                        if value == instance_name:
-                            if VNCEnableList[index] == "false":
-                                print('VNC or VNCPort has not been set for this node')
-                                break
-                            else:
-                                vnc_port = VNCPortList[index]
+            if item.parent():
+                # machine doubleclick
+                # node_name = item.parent().text(0)
+                instance_name = item.text(0)
+                project_name = item.text(1)
+                domain_name = item.text(2)
+                # if (self.platform == 'Linux' or self.platform == 'MacOS'):
+                if (self.connection == 'Console'):
+                    # VNC
+                    if self.platform is None:
+                        print("Please select your local running platform")
+                    else:
+                        InstanceNameList = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'name')
+                        VNCEnableList = ProcessTag.getTagAttributeValue(self.document, 'VNC', 'enabled')
+                        VNCPortList = ProcessTag.getTextNodeValue(self.document, 'VNCPort')
+                        ProviderIPList = ProcessTag.getTagAttributeValueWithCondition(self.document, 'Adapter', 'IP',
+                                                                                      'name', 'provider')
+                        for index, value in enumerate(InstanceNameList):
+                            if value == instance_name:
+                                if VNCEnableList[index] == "false":
+                                    print('VNC or VNCPort has not been set for this node')
+                                    break
+                                else:
+                                    vnc_port = VNCPortList[index]
+                                    provider_ip = ProviderIPList[index]
+                                    ssh_thread = OpenStackTunnelThread(local_port, provider_ip, vnc_port, username)
+                                    ssh_thread.start()
+                                    check_port_thread = CheckPortThread(local_port)
+                                    check_port_thread.start()
+                                    check_port_thread.join(timeout=5)
+                                    check_port_thread.terminate()
+                                    if self.platform == 'MacOS':
+                                        vnc_cmd = "open vnc://127.0.0.1:" + str(local_port)
+                                    elif self.platform == 'Linux':
+                                        vnc_cmd = "vncviewer 127.0.0.1:" + str(local_port)
+                                    elif self.platform == 'Win':
+                                        vnc_cmd = "vncviewer 127.0.0.1:" + str(local_port)
+                                    # print(vnc_cmd)
+                                    subprocess.run(vnc_cmd.split())
+                                    break
+                if (self.connection == 'SSH'):
+                    # SSH
+                    if self.platform is None:
+                        print("Please select your local running platform")
+                    else:
+                        InstanceNameList = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'name')
+                        usernameList = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'username')
+                        passwordList = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'password')
+                        ProviderIPList = ProcessTag.getTagAttributeValueWithCondition(self.document, 'Adapter', 'IP',
+                                                                                      'name', 'provider')
+                        for index, value in enumerate(InstanceNameList):
+                            if value == instance_name:
                                 provider_ip = ProviderIPList[index]
-                                ssh_thread = OpenStackTunnelThread(local_port, provider_ip, vnc_port, username)
+                                ssh_thread = OpenStackTunnelThread(local_port, provider_ip, 22, username)
                                 ssh_thread.start()
                                 check_port_thread = CheckPortThread(local_port)
                                 check_port_thread.start()
                                 check_port_thread.join(timeout=5)
                                 check_port_thread.terminate()
-                                if self.platform == 'MacOS':
-                                    vnc_cmd = "open vnc://127.0.0.1:" + str(local_port)
-                                elif self.platform == 'Linux':
-                                    vnc_cmd = "vncviewer 127.0.0.1:" + str(local_port)
-                                elif self.platform == 'Win':
-                                    vnc_cmd = "vncviewer 127.0.0.1:" + str(local_port)
-                                # print(vnc_cmd)
-                                subprocess.run(vnc_cmd.split())
-                                break
-            if (self.connection == 'SSH'):
-                # SSH
-                if self.platform is None:
-                    print("Please select your local running platform")
-                else:
-                    InstanceNameList = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'name')
-                    usernameList = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'username')
-                    passwordList = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'password')
-                    ProviderIPList = ProcessTag.getTagAttributeValueWithCondition(self.document, 'Adapter', 'IP',
-                                                                                  'name', 'Provider')
-                    for index, value in enumerate(InstanceNameList):
-                        if value == instance_name:
-                            provider_ip = ProviderIPList[index]
-                            ssh_thread = OpenStackTunnelThread(local_port, provider_ip, 22, username)
-                            ssh_thread.start()
-                            check_port_thread = CheckPortThread(local_port)
-                            check_port_thread.start()
-                            check_port_thread.join(timeout=5)
-                            check_port_thread.terminate()
-                            # web ssh
-                            ssh_user = usernameList[index]
-                            ssh_password = passwordList[index]
-                            ssh_password_bytes = ssh_password.encode('utf-8')
-                            ssh_password_base64_bytes = base64.b64encode(ssh_password_bytes)
-                            ssh_password_base64 = ssh_password_base64_bytes.decode('utf')
-                            wssh_port = 8001
-                            while Port.is_port_used(local_addr, wssh_port):
-                                wssh_port += 1
-                            wssh_thread = WSSH_Thread(wssh_port)
-                            wssh_thread.start()
-                            check_port_thread = CheckPortThread(wssh_port)
-                            check_port_thread.start()
-                            check_port_thread.join(timeout=5)
-                            check_port_thread.terminate()
-                            print("http://localhost:" + str(wssh_port) + "/?hostname=localhost&port=" + str(
-                                local_port) + "&username=" + ssh_user + "&password=" + ssh_password_base64)
-                            webbrowser.open(
-                                "http://localhost:" + str(wssh_port) + "/?hostname=localhost&port=" + str(
+                                # web ssh
+                                ssh_user = usernameList[index]
+                                ssh_password = passwordList[index]
+                                ssh_password_bytes = ssh_password.encode('utf-8')
+                                ssh_password_base64_bytes = base64.b64encode(ssh_password_bytes)
+                                ssh_password_base64 = ssh_password_base64_bytes.decode('utf')
+                                wssh_port = 8001
+                                while Port.is_port_used(local_addr, wssh_port):
+                                    wssh_port += 1
+                                wssh_thread = WSSH_Thread(wssh_port)
+                                wssh_thread.start()
+                                check_port_thread = CheckPortThread(wssh_port)
+                                check_port_thread.start()
+                                check_port_thread.join(timeout=5)
+                                check_port_thread.terminate()
+                                print("http://localhost:" + str(wssh_port) + "/?hostname=localhost&port=" + str(
                                     local_port) + "&username=" + ssh_user + "&password=" + ssh_password_base64)
+                                webbrowser.open(
+                                    "http://localhost:" + str(wssh_port) + "/?hostname=localhost&port=" + str(
+                                        local_port) + "&username=" + ssh_user + "&password=" + ssh_password_base64)
 
-                            # cmd ssh
-                            # ssh_cmd = "ssh -p " + str(
-                            #     local_port)  + " log4shell@localhost"
-                            # print(ssh_cmd)
-                            # subprocess.run(ssh_cmd.split())
-                            break
-
+                                # cmd ssh
+                                # ssh_cmd = "ssh -p " + str(
+                                #     local_port)  + " log4shell@localhost"
+                                # print(ssh_cmd)
+                                # subprocess.run(ssh_cmd.split())
+                                break
+            else:
+                # project doubleclick
+                print(f"You've double click the project")
     def Populate(self, Node_QTreeWidgetItem):
         HeaderLabels = {'deter': ["Machine Name", "Experiment Name", "Team Name"],
                         'openstack': ["Instance Name", "Project Name", "Domain Name"]}
@@ -534,7 +535,7 @@ class myMainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 InstanceNameList = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'name')
                 usernameList = ProcessTag.getTagAttributeValue(self.document, 'Machine', 'username')
                 ProviderIPList = ProcessTag.getTagAttributeValueWithCondition(self.document, 'Adapter', 'IP',
-                                                                              'name', 'Provider')
+                                                                              'name', 'provider')
 
                 for index, value in enumerate(InstanceNameList):
                     if value == self.instance_selected:
