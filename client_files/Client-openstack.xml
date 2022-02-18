@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Client platform="openstack">
+  <VM>
+    <Machine name="[instance_name]" Project="[project_name]" Domain="[domain_name]" username="[ssh_username]" password="[ssh_password]">
+      <VNC enabled="true">
+        <VNCPort>[vncport (5901 by default)]</VNCPort>
+      </VNC>
+      <Network>
+        <Adapter name="provider" enabled="true" IP="[provider_ip]" />
+      </Network>
+    </Machine>
+<!--    <Machine name="[instance_name_2]" Project="[project_name_2]" Domain="[domain_name_2]" username="[ssh_username]" password="[ssh_password]">-->
+<!--      <VNC enabled="true">-->
+<!--        <VNCPort>5901</VNCPort>-->
+<!--      </VNC>-->
+<!--      <Network>-->
+<!--        <Adapter name="provider" enabled="true" IP="[provider_ip]" />-->
+<!--      </Network>-->
+<!--    </Machine>-->
+  </VM>
+</Client>
+
