@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Client platform="deter">
+  <NODES>
+    <Node name="[node_name](e.g n1)" ExperimentName="[experiment_name]" TeamName="[team_name]">
+      <VNC enabled="true">
+        <VNCPort>[vncport (5901 by default)]</VNCPort>
+      </VNC>
+    </Node>
+<!--     <Node name="n2" ExperimentName="[experiment_name_2]" TeamName="[team_name_2]">
+      <VNC enabled="true">
+        <VNCPort>[vncport (5901 by default)]</VNCPort>
+      </VNC>
+    </Node> -->
+  </NODES>
+</Client>
+
